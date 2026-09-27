@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UGV-01 // BLE Field Terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0d09; --panel:#11150f; --line:#26301f;
+    --amber:#ffb000; --amber-dim:#7a5800; --red:#ff4d4d; --cyan:#5ad1c9;
+    --text:#d9d6c9; --muted:#5f6b52;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    background-image:repeating-linear-gradient(rgba(255,176,0,0.025) 0px, rgba(255,176,0,0.025) 1px, transparent 1px, transparent 3px);
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:18px 16px 40px;}
+  header{display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:16px; flex-wrap:wrap; gap:10px;}
+  h1{font-size:18px; letter-spacing:1px; margin:0; color:var(--amber); font-weight:700;}
+  .sub{color:var(--muted); font-size:11px; margin-top:4px;}
+  .status{display:flex; align-items:center; gap:8px; font-size:12px;}
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--muted); box-shadow:0 0 6px var(--muted);}
+  .dot.on{background:var(--amber); box-shadow:0 0 8px var(--amber);}
+
+  .grid{display:grid; grid-template-columns:1.3fr 1fr; gap:14px;}
+  @media(max-width:760px){.grid{grid-template-columns:1fr;}}
+
+  .panel{background:var(--panel); border:1px solid var(--line); padding:14px;}
+  .panel h2{font-size:11px; letter-spacing:1.5px; color:var(--muted); margin:0 0 12px; font-weight:500;}
+
+  .feed{aspect-ratio:4/3; background:#050603; border:1px solid var(--line); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;}
+  .feed img{width:100%; height:100%; object-fit:cover;}
+  .feed .noSignal{color:var(--muted); font-size:12px; text-align:center; line-height:1.6; padding:0 10px;}
+
+  input[type=text]{background:#0e120c; border:1px solid var(--line); color:var(--amber); font-family:inherit; padding:6px 8px; font-size:12px; width:140px;}
+  button{background:var(--amber-dim); color:var(--amber); border:1px solid var(--amber-dim); font-family:inherit; padding:8px 12px; font-size:11px; cursor:pointer; letter-spacing:.5px;}
+  button:hover{background:var(--amber); color:#0a0d09;}
+  button:disabled{opacity:.4; cursor:not-allowed;}
+  .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+
+  .telemetry{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .tcell{border:1px solid var(--line); padding:10px;}
+  .tcell .label{font-size:10px; color:var(--muted); letter-spacing:1px;}
+  .tcell .val{font-size:20px; color:var(--amber); margin-top:4px;}
+  .tcell.trig{border-color:var(--red);}
+  .tcell.trig .val{color:var(--red);}
+  .bar{height:4px; background:var(--line); margin-top:8px; position:relative;}
+  .bar i{position:absolute; top:0; left:0; height:100%; background:var(--amber); display:block;}
+
+  .dpad{display:grid; grid-template-columns:60px 60px 60px; grid-template-rows:60px 60px 60px; gap:6px; justify-content:center; margin:10px 0;}
+  .dpad button{width:60px; height:60px; font-size:18px; padding:0;}
+  .dpad .stop{background:#3a1414; color:var(--red); border-color:#3a1414;}
+  .dpad .stop:hover{background:var(--red); color:#0a0d09;}
+
+  .sliderCol label{font-size:10px; color:var(--muted); display:block; margin-bottom:6px;}
+  input[type=range]{width:100%; accent-color:var(--amber); background:transparent;}
+
+  .gps{font-size:12px; line-height:1.9;}
+  .gps b{color:var(--amber);}
+  .compass{width:64px; height:64px; margin:0 auto 10px;}
+
+  .log{height:130px; overflow-y:auto; font-size:11px; line-height:1.8;}
+  .log .t{color:var(--muted); margin-right:8px;}
+  .log .e.alert{color:var(--red);}
+  .log .e.info{color:var(--cyan);}
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>UGV-01 :: SEARCH &amp; RESCUE UNIT</h1>
+      <div class="sub">BLE FIELD TERMINAL — v0.2</div>
+    </div>
+    <div class="status">
+      <span class="dot" id="dot"></span>
+      <span id="statusText">NOT PAIRED</span>
+    </div>
+  </header>
+
+  <div class="row" style="margin-bottom:14px;">
+    <button id="bleBtn" onclick="toggleBle()">⚡ PAIR VIA BLUETOOTH</button>
+    <span style="width:16px;"></span>
+    <span style="font-size:11px; color:var(--muted);">CAMERA IP (WiFi)</span>
+    <input type="text" id="ipInput" placeholder="192.168.1.50">
+    <button onclick="connectCam()">LOAD FEED</button>
+  </div>
+
+  <div class="grid">
+    <div style="display:flex; flex-direction:column; gap:14px;">
+
+      <div class="panel">
+        <h2>LIVE FEED — CAM01 (WiFi)</h2>
+        <div class="feed">
+          <img id="camImg" style="display:none;">
+          <div class="noSignal" id="noSignal">NO SIGNAL<br>Enter ESP32-CAM IP above and load feed</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>MOVEMENT CONTROL (BLE)</h2>
+        <div class="dpad">
+          <span></span>
+          <button onmousedown="cmd('F')" onmouseup="cmd('S')" ontouchstart="cmd('F')" ontouchend="cmd('S')">▲</button>
+          <span></span>
+          <button onmousedown="cmd('L')" onmouseup="cmd('S')" ontouchstart="cmd('L')" ontouchend="cmd('S')">◀</button>
+          <button class="stop" onclick="cmd('S')">■</button>
+          <button onmousedown="cmd('R')" onmouseup="cmd('S')" ontouchstart="cmd('R')" ontouchend="cmd('S')">▶</button>
+          <span></span>
+          <button onmousedown="cmd('B')" onmouseup="cmd('S')" ontouchstart="cmd('B')" ontouchend="cmd('S')">▼</button>
+          <span></span>
+        </div>
+        <div class="sub">Hold to move, release to stop. Sends single-char commands F/B/L/R/S.</div>
+      </div>
+
+      <div class="panel">
+        <h2>GIMBAL / CAMERA PAN-TILT (BLE)</h2>
+        <div class="row" style="gap:20px;">
+          <div class="sliderCol" style="flex:1;">
+            <label>PAN — <span id="panVal">90</span>°</label>
+            <input type="range" min="0" max="180" value="90" oninput="setServo('P',this.value)">
+          </div>
+          <div class="sliderCol" style="flex:1;">
+            <label>TILT — <span id="tiltVal">90</span>°</label>
+            <input type="range" min="0" max="180" value="90" oninput="setServo('T',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="panel">
+        <h2>GPS POSITION (BLE)</h2>
+        <svg class="compass" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#26301f" stroke-width="2"/>
+          <line x1="50" y1="8" x2="50" y2="18" stroke="#ffb000" stroke-width="2"/>
+          <text x="50" y="6" fill="#5f6b52" font-size="8" text-anchor="middle">N</text>
+          <circle cx="50" cy="50" r="4" fill="#ffb000"/>
+        </svg>
+        <div class="gps">
+          LAT: <b id="lat">--</b><br>
+          LON: <b id="lon">--</b>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>SENSOR TELEMETRY (BLE)</h2>
+        <div class="telemetry">
+          <div class="tcell" id="pirCell"><div class="label">PIR MOTION</div><div class="val" id="pirVal">--</div></div>
+          <div class="tcell" id="vibCell"><div class="label">VIBRATION</div><div class="val" id="vibVal">--</div><div class="bar"><i id="vibBar" style="width:0%"></i></div></div>
+          <div class="tcell" id="sndCell"><div class="label">SOUND</div><div class="val" id="sndVal">--</div><div class="bar"><i id="sndBar" style="width:0%"></i></div></div>
+          <div class="tcell"><div class="label">BATTERY</div><div class="val" id="battVal">--%</div><div class="bar"><i id="battBar" style="width:0%"></i></div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>EVENT LOG</h2>
+        <div class="log" id="logBox"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- BLE profile: must match ESP32 firmware ----
+const SERVICE_UUID   = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+const CMD_CHAR_UUID  = "beb5483e-36e1-4688-b7f5-ea07361b26a8"; // write
+const TELE_CHAR_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a9"; // notify, CSV: PIR,VIB,SND,BATT,LAT,LON
+
+let bleDevice, cmdChar, connected = false;
+
+function log(msg, cls){
+  const box = document.getElementById('logBox');
+  const t = new Date().toLocaleTimeString();
+  box.insertAdjacentHTML('afterbegin', `<div class="e ${cls||''}"><span class="t">${t}</span>${msg}</div>`);
+}
+function setStatus(on, text){
+  document.getElementById('dot').className = 'dot' + (on ? ' on' : '');
+  document.getElementById('statusText').textContent = text;
+}
+
+async function toggleBle(){
+  if(connected){ bleDevice?.gatt.disconnect(); return; }
+  if(!navigator.bluetooth){
+    log('Web Bluetooth not supported — use Chrome on desktop/Android, and serve this page over HTTPS or localhost.', 'alert');
+    return;
+  }
+  try{
+    bleDevice = await navigator.bluetooth.requestDevice({
+      filters: [{ services: [SERVICE_UUID] }]
+    });
+    bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+    const server = await bleDevice.gatt.connect();
+    const service = await server.getPrimaryService(SERVICE_UUID);
+    cmdChar = await service.getCharacteristic(CMD_CHAR_UUID);
+    const teleChar = await service.getCharacteristic(TELE_CHAR_UUID);
+    await teleChar.startNotifications();
+    teleChar.addEventListener('characteristicvaluechanged', onTelemetry);
+
+    connected = true;
+    setStatus(true, 'PAIRED — ' + bleDevice.name);
+    document.getElementById('bleBtn').textContent = '⏻ DISCONNECT';
+    log('Connected to ' + bleDevice.name, 'info');
+  }catch(e){
+    log('Pairing failed or cancelled: ' + e.message, 'alert');
+  }
+}
+function onDisconnected(){
+  connected = false;
+  setStatus(false, 'NOT PAIRED');
+  document.getElementById('bleBtn').textContent = '⚡ PAIR VIA BLUETOOTH';
+  log('Disconnected', 'alert');
+}
+
+function writeCmd(str){
+  if(!connected || !cmdChar) return;
+  const enc = new TextEncoder();
+  cmdChar.writeValueWithoutResponse(enc.encode(str)).catch(e => log('Write failed: ' + e.message, 'alert'));
+}
+function cmd(c){ writeCmd(c); }
+function setServo(axis, val){
+  document.getElementById(axis === 'P' ? 'panVal' : 'tiltVal').textContent = val;
+  writeCmd(axis + ':' + val);
+}
+
+// CSV payload: PIR,VIB,SND,BATT,LAT,LON
+function onTelemetry(evt){
+  const text = new TextDecoder().decode(evt.target.value);
+  const parts = text.split(',').map(Number);
+  if(parts.length < 6) return;
+  const [pir, vib, snd, batt, lat, lon] = parts;
+
+  const pirCell = document.getElementById('pirCell');
+  document.getElementById('pirVal').textContent = pir ? 'MOTION' : 'CLEAR';
+  pirCell.classList.toggle('trig', !!pir);
+  if(pir) log('PIR motion detected', 'alert');
+
+  setBar('vib', vib);
+  setBar('snd', snd);
+  document.getElementById('battVal').textContent = Math.round(batt) + '%';
+  document.getElementById('battBar').style.width = Math.round(batt) + '%';
+  document.getElementById('lat').textContent = lat.toFixed(5);
+  document.getElementById('lon').textContent = lon.toFixed(5);
+}
+function setBar(prefix, value){
+  const pct = Math.min(100, value);
+  document.getElementById(prefix+'Val').textContent = Math.round(value);
+  document.getElementById(prefix+'Bar').style.width = pct + '%';
+  document.getElementById(prefix+'Cell').classList.toggle('trig', pct > 70);
+}
+
+function connectCam(){
+  const ip = document.getElementById('ipInput').value.trim();
+  if(!ip){ log('Enter camera IP first', 'alert'); return; }
+  document.getElementById('camImg').src = 'http://' + ip + ':81/stream';
+  document.getElementById('camImg').style.display = 'block';
+  document.getElementById('noSignal').style.display = 'none';
+  log('Loading camera stream from ' + ip, 'info');
+}
+
+log('Terminal ready. Click "Pair via Bluetooth" to connect to the robot.', 'info');
+</script>
+</body>
+</html>
