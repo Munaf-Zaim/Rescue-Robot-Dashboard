@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="RESQ-AI search and rescue robot control dashboard">
 <title>RESQ-AI | MBU Student Dashboard</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
@@ -19,6 +20,9 @@ header{background:linear-gradient(90deg,var(--or1),var(--or2));color:#fff;displa
 .dot{width:8px;height:8px;border-radius:50%;background:#4ade80}.dot.off{background:#fca5a5}
 .layout{display:flex;min-height:calc(100vh - 110px)}
 aside{width:245px;background:var(--nav);color:#cfd6df;padding:18px 12px;flex-shrink:0;display:flex;flex-direction:column}
+.tl{padding:0 8px 14px;border-bottom:1px solid #2a3644;margin-bottom:14px}.tl h3{font-size:10px;color:#7f8c9b;margin:0 0 8px;font-weight:600}.tl div{display:flex;gap:8px;align-items:center;padding:4px 0;color:#fff;font-size:11px}.tl .av{width:26px;height:26px;font-size:9px;flex-shrink:0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 .user{display:flex;gap:10px;align-items:center;padding:0 8px 16px;border-bottom:1px solid #2a3644;margin-bottom:14px}
 .av{width:40px;height:40px;border-radius:50%;background:var(--or);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
 .user b{display:block;color:#fff}.user small{font-size:9px;color:#7f8c9b}
@@ -80,7 +84,12 @@ input[type=range]{width:100%;accent-color:var(--or)}
 </header>
 <div class="layout">
 <aside>
-  <div class="user"><div class="av">R</div><div><b>M. Revanth</b><small>Final Year • EIE</small></div></div>
+  <section class="tl" aria-label="Team members"><h3>Team Members</h3>
+    <div><span class="av">MM</span>M MD Munaf</div>
+    <div><span class="av">KV</span>K. Varshini Chowdary</div>
+    <div><span class="av">YM</span>Yalla Madhav Krishna</div>
+    <div><span class="av">MR</span>Mudhigolam Revanth</div>
+  </section>
   <nav>
     <button class="on" data-p="dash"><i>▦</i>Dashboard</button>
     <button data-p="det"><i>◆</i>Project Details</button>
@@ -140,13 +149,13 @@ input[type=range]{width:100%;accent-color:var(--or)}
   </div>
 
   <div class="g3">
-    <div class="card"><div class="ch"><div><b>MESSAGE / RESCUE LOG</b><small>Notifications from the mission system</small></div><button class="btn l" id="clr" style="padding:5px 9px">CLEAR</button></div><div class="log" id="logD"></div></div>
+    <div class="card"><div class="ch"><div><b>MESSAGE / RESCUE LOG</b><small>Notifications from the mission system</small></div><button class="btn l" id="clr" style="padding:5px 9px">CLEAR</button></div><div class="log" id="logD" role="log" aria-live="polite"></div></div>
     <div class="card">
       <div class="ch"><div><b>ROBOT MOVEMENT</b><small>Bluetooth control • hold to move</small></div><span class="pill b" id="mvP">STOPPED</span></div>
       <div class="dp">
-        <span></span><button data-c="F">▲</button><span></span>
-        <button data-c="L">◀</button><button class="st" data-c="S">■</button><button data-c="R">▶</button>
-        <span></span><button data-c="B">▼</button><span></span>
+        <span></span><button data-c="F" aria-label="Move forward">▲</button><span></span>
+        <button data-c="L" aria-label="Turn left">◀</button><button class="st" data-c="S" aria-label="Stop">■</button><button data-c="R" aria-label="Turn right">▶</button>
+        <span></span><button data-c="B" aria-label="Move backward">▼</button><span></span>
       </div>
       <div class="cam"><button data-s="T:up">CAM ▲</button><button data-s="P:left">CAM ◀</button><button data-s="C">CENTER</button><button data-s="P:right">CAM ▶</button><button data-s="T:down">CAM ▼</button></div>
       <div class="sl" style="margin-top:12px"><div>Pan <em id="panV">90</em>°</div><input type="range" id="pan" min="0" max="180" value="90"></div>
@@ -166,10 +175,11 @@ input[type=range]{width:100%;accent-color:var(--or)}
 
 <section class="page" id="team"><div class="card"><h2 class="t">Project Team</h2>
   <div class="grid3">
-    <div class="tbox tm3"><div class="av">KV</div><b>K. Varshini Chowdary</b><small>23101a040018</small></div>
-    <div class="tbox tm3"><div class="av">MR</div><b>Mudhigolam Revanth</b><small>23101a040022</small></div>
     <div class="tbox tm3"><div class="av">MM</div><b>M MD Munaf</b><small>23101a040011</small></div>
-    <div class="tbox tm3"><div class="av">YM</div><b>Yalla Madhav Krishna</b><small>23101a040020</small></div></div>
+    <div class="tbox tm3"><div class="av">KV</div><b>K. Varshini Chowdary</b><small>23101a040018</small></div>
+    <div class="tbox tm3"><div class="av">YM</div><b>Yalla Madhav Krishna</b><small>23101a040020</small></div>
+    <div class="tbox tm3"><div class="av">MR</div><b>Mudhigolam Revanth</b><small>23101a040022</small></div>
+  </div>
   <div class="sup"><b>Supervisor</b><br>Ms. Divya, M.Tech.<br><small>Assistant Professor, Department of ECE</small></div></div></section>
 
 <section class="page" id="msg"><div class="card"><div class="ch"><div><h2 class="t">Message Log</h2><p style="color:var(--mu)">All dashboard notifications and rescue events appear here.</p></div></div><div class="log" id="logM"></div></div></section>
@@ -185,141 +195,288 @@ input[type=range]{width:100%;accent-color:var(--or)}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-const $=id=>document.getElementById(id);
-let dev,cmdChar,connected=false,clues=0,unread=3,mission=false,lastPir=0;
-const logs=[];
-// ---------- navigation ----------
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));
-  if(b.dataset.p==='msg'){unread=0;badge();} if(b.dataset.p==='dash'&&map)setTimeout(()=>map.invalidateSize(),50);
+(() => {
+'use strict';
+/* ===== RESQ-AI Field Dashboard — client logic =====
+   BLE: SERVICE + CMD (write) + TELEMETRY (notify)
+   Telemetry line: PIR,VIB,SND,BATT,LAT,LON[,SPEED,SATS]  (end each packet with "\n")
+   Commands: F B L R S  |  P:<0-180>  |  T:<0-180> */
+const $ = (id) => document.getElementById(id);
+const CFG = Object.freeze({
+  SVC: '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+  CMD: 'beb5483e-36e1-4688-b7f5-ea07361b26a8',
+  TEL: 'beb5483e-36e1-4688-b7f5-ea07361b26a9',
+  HOLD_MS: 200,        // re-send drive command while a button is held
+  SERVO_MS: 60,        // min gap between pan/tilt writes
+  FLUSH_MS: 150,       // parse unterminated telemetry after this idle time
+  TELE_TIMEOUT: 5000,  // flag telemetry lost
+  RECONNECTS: 3,
+  CAM_RETRIES: 3,
+  MAX_LOG: 200,
+  DEFAULT_POS: [13.6288, 79.4192],
 });
-function badge(){$('nbd').textContent=unread;$('nbd').style.display=unread?'':'none';$('hbell').textContent=unread;}
-// ---------- log ----------
-function log(msg,tag,alert){
-  logs.unshift({t:new Date().toLocaleTimeString(),msg,tag:tag||'SYSTEM',a:alert});
-  if(!$('msg').classList.contains('on')){unread++;badge();}
+const store = {
+  get(k, d) { try { return localStorage.getItem('resq.' + k) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('resq.' + k, v); } catch { /* storage blocked */ } },
+};
+const st = {
+  dev: null, cmd: null, connected: false, manual: false, retries: 0,
+  busy: false, pending: null, held: null, holdTimer: null,
+  buf: '', flushTimer: null, teleAt: 0, teleLost: false,
+  pan: 90, tilt: 90, lastServo: 0,
+  clues: 0, unread: 3, alerts: { pir: false, vib: false, snd: false },
+  camTry: 0, camOn: false,
+};
+
+/* ---------- Message log (textContent only: no HTML injection) ---------- */
+const logs = [];
+function log(msg, tag = 'SYSTEM', alert = false) {
+  logs.unshift({ t: new Date().toLocaleTimeString(), msg, tag, alert });
+  if (logs.length > CFG.MAX_LOG) logs.pop();
+  if (!$('msg').classList.contains('on')) { st.unread++; badge(); }
   renderLog();
 }
-function renderLog(){
-  const h=logs.length?logs.map(l=>`<div><span class="tm">${l.t}</span>${l.msg}<span class="tag ${l.a?'a':''}">${l.tag}</span></div>`).join(''):'<div>No messages.</div>';
-  $('logD').innerHTML=h;$('logM').innerHTML=h;
+function renderLog() {
+  const rows = (logs.length ? logs : [{ t: '', msg: 'No messages.', tag: '' }]).map((l) => {
+    const d = document.createElement('div');
+    const t = document.createElement('span'); t.className = 'tm'; t.textContent = l.t;
+    d.append(t, l.msg);
+    if (l.tag) { const g = document.createElement('span'); g.className = 'tag' + (l.alert ? ' a' : ''); g.textContent = l.tag; d.append(g); }
+    return d;
+  });
+  $('logD').replaceChildren(...rows);
+  $('logM').replaceChildren(...rows.map((r) => r.cloneNode(true)));
 }
-$('clr').onclick=()=>{logs.length=0;unread=0;badge();renderLog();};
-// ---------- map ----------
-let map,marker;
-function initMap(){
-  if(!window.L){$('map').innerHTML='<p style="padding:20px;color:#7a8594">Map needs internet (Leaflet).</p>';return;}
-  map=L.map('map').setView([13.6288,79.4192],14);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
-  marker=L.marker([13.6288,79.4192]).addTo(map);
+function badge() {
+  $('nbd').textContent = st.unread; $('nbd').style.display = st.unread ? '' : 'none'; $('hbell').textContent = st.unread;
 }
-function setPos(lat,lon,spd,sat){
-  $('lat').textContent=Math.abs(lat).toFixed(6)+'° '+(lat>=0?'N':'S');
-  $('lon').textContent=Math.abs(lon).toFixed(6)+'° '+(lon>=0?'E':'W');
-  if(!isNaN(spd))$('spd').textContent=spd.toFixed(1)+' km/h';
-  if(!isNaN(sat)){$('sat').textContent=sat;$('sSat').textContent=sat+' satellites';}
-  const fix=lat!==0||lon!==0;
-  $('gpsP').textContent=fix?'GPS LOCKED':'NO FIX';$('sGps').textContent=fix?'LOCKED':'NO FIX';
-  if(fix&&map){marker.setLatLng([lat,lon]);map.panTo([lat,lon]);}
-  $('gmap').dataset.u=`https://www.google.com/maps?q=${lat},${lon}`;
+
+/* ---------- Navigation ---------- */
+document.querySelectorAll('nav button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('nav button').forEach((x) => x.classList.toggle('on', x === b));
+  document.querySelectorAll('.page').forEach((p) => p.classList.toggle('on', p.id === b.dataset.p));
+  if (b.dataset.p === 'msg') { st.unread = 0; badge(); }
+  if (b.dataset.p === 'dash' && map) setTimeout(() => map.invalidateSize(), 50);
+}));
+
+/* ---------- Map / GPS ---------- */
+let map, marker;
+function initMap() {
+  if (!window.L) { $('map').textContent = 'Map unavailable offline (Leaflet not loaded).'; return; }
+  map = L.map('map').setView(CFG.DEFAULT_POS, 14);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
+  marker = L.marker(CFG.DEFAULT_POS).addTo(map);
 }
-$('gmap').onclick=()=>window.open($('gmap').dataset.u||'https://www.google.com/maps?q=13.6288,79.4192','_blank');
-// ---------- BLE ----------
-function setBle(on,txt){$('hdot').className='dot'+(on?'':' off');$('hsys').textContent=txt;$('bleBtn').textContent=on?'⏻ DISCONNECT':'⚡ PAIR BLUETOOTH';}
-$('bleBtn').onclick=async()=>{
-  if(connected){dev.gatt.disconnect();return;}
-  if(!navigator.bluetooth){log('Web Bluetooth not supported. Use Chrome/Edge and open this page on http://localhost or HTTPS.','BLE',true);return;}
-  try{
-    const S=$('uSvc').value.trim();
-    dev=await navigator.bluetooth.requestDevice({filters:[{services:[S]}]});
-    dev.addEventListener('gattserverdisconnected',()=>{connected=false;setBle(false,'BLE NOT PAIRED');log('Bluetooth disconnected','BLE',true);});
-    const srv=await dev.gatt.connect(),svc=await srv.getPrimaryService(S);
-    cmdChar=await svc.getCharacteristic($('uCmd').value.trim());
-    const tc=await svc.getCharacteristic($('uTel').value.trim());
-    await tc.startNotifications();tc.addEventListener('characteristicvaluechanged',onTele);
-    connected=true;setBle(true,'SYSTEM ONLINE — '+dev.name);log('Connected to '+dev.name,'BLE');
-  }catch(e){log('Pairing failed: '+e.message,'BLE',true);}
-};
-function send(s){
-  if(!connected||!cmdChar)return;
-  cmdChar.writeValueWithoutResponse(new TextEncoder().encode(s)).catch(e=>log('Write failed: '+e.message,'BLE',true));
+function setPos(lat, lon, spd, sat) {
+  const fix = Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && (lat !== 0 || lon !== 0);
+  if (fix) {
+    $('lat').textContent = Math.abs(lat).toFixed(6) + '° ' + (lat >= 0 ? 'N' : 'S');
+    $('lon').textContent = Math.abs(lon).toFixed(6) + '° ' + (lon >= 0 ? 'E' : 'W');
+    if (marker) { marker.setLatLng([lat, lon]); map.panTo([lat, lon]); }
+    $('gmap').dataset.u = `https://www.google.com/maps?q=${lat},${lon}`;
+  }
+  if (Number.isFinite(spd)) $('spd').textContent = spd.toFixed(1) + ' km/h';
+  if (Number.isFinite(sat)) { $('sat').textContent = sat; $('sSat').textContent = sat + ' satellites'; }
+  $('gpsP').textContent = fix ? 'GPS LOCKED' : 'NO FIX'; $('sGps').textContent = fix ? 'LOCKED' : 'NO FIX';
 }
-function drive(c){send(c);$('mvP').textContent=c==='S'?'STOPPED':'MOVING';}
-document.querySelectorAll('.dp button').forEach(b=>{
-  const c=b.dataset.c;
-  b.addEventListener('pointerdown',e=>{e.preventDefault();drive(c);});
-  if(c!=='S'){['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>drive('S')));}
+$('gmap').addEventListener('click', () =>
+  window.open($('gmap').dataset.u || `https://www.google.com/maps?q=${CFG.DEFAULT_POS}`, '_blank', 'noopener'));
+
+/* ---------- Bluetooth LE ---------- */
+function setBle(on, txt) {
+  $('hdot').className = 'dot' + (on ? '' : ' off'); $('hsys').textContent = txt;
+  $('bleBtn').textContent = on ? '⏻ DISCONNECT' : '⚡ PAIR BLUETOOTH';
+}
+async function openLink(device) {
+  const server = await device.gatt.connect();
+  const svc = await server.getPrimaryService($('uSvc').value.trim().toLowerCase());
+  st.cmd = await svc.getCharacteristic($('uCmd').value.trim().toLowerCase());
+  const tel = await svc.getCharacteristic($('uTel').value.trim().toLowerCase());
+  await tel.startNotifications();
+  tel.removeEventListener('characteristicvaluechanged', onTele);
+  tel.addEventListener('characteristicvaluechanged', onTele);
+  st.connected = true; st.retries = 0; st.teleAt = 0; st.teleLost = false;
+  setBle(true, 'SYSTEM ONLINE — ' + (device.name || 'Robot'));
+  log('Bluetooth connected: ' + (device.name || 'Robot'), 'BLE');
+}
+function onDropped() {
+  st.connected = false; st.cmd = null; stopHold(); $('mvP').textContent = 'STOPPED';
+  if (!st.manual && st.retries < CFG.RECONNECTS) {
+    st.retries++; setBle(false, `RECONNECTING (${st.retries}/${CFG.RECONNECTS})`);
+    log('Link lost. Reconnecting…', 'BLE', true);
+    setTimeout(() => openLink(st.dev).catch(() => { if (!st.connected) onDropped(); }), 1500 * st.retries);
+  } else {
+    setBle(false, 'BLE NOT PAIRED'); log(st.manual ? 'Bluetooth disconnected' : 'Link lost. Press Pair Bluetooth to reconnect.', 'BLE', !st.manual);
+  }
+}
+$('bleBtn').addEventListener('click', async () => {
+  if (st.connected) { st.manual = true; send('S'); st.dev.gatt.disconnect(); return; }
+  if (!navigator.bluetooth) { log('Web Bluetooth unsupported. Use Chrome/Edge on http://localhost or HTTPS.', 'BLE', true); return; }
+  try {
+    st.manual = false; st.retries = 0;
+    st.dev = await navigator.bluetooth.requestDevice({ filters: [{ services: [$('uSvc').value.trim().toLowerCase()] }] });
+    st.dev.removeEventListener('gattserverdisconnected', onDropped);
+    st.dev.addEventListener('gattserverdisconnected', onDropped);
+    await openLink(st.dev);
+  } catch (e) { log('Pairing failed: ' + e.message, 'BLE', true); setBle(false, 'BLE NOT PAIRED'); }
 });
-window.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.repeat)return;const m={ArrowUp:'F',ArrowDown:'B',ArrowLeft:'L',ArrowRight:'R',' ':'S'}[e.key];if(m){e.preventDefault();drive(m);}});
-window.addEventListener('keyup',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))drive('S');});
-let pan=90,tilt=90;
-function servo(){$('panV').textContent=pan;$('tiltV').textContent=tilt;$('pan').value=pan;$('tilt').value=tilt;}
-$('pan').oninput=e=>{pan=+e.target.value;servo();send('P:'+pan);};
-$('tilt').oninput=e=>{tilt=+e.target.value;servo();send('T:'+tilt);};
-document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{
-  const s=b.dataset.s;
-  if(s==='C'){pan=90;tilt=90;send('P:90');send('T:90');}
-  else if(s==='P:left'){pan=Math.max(0,pan-10);send('P:'+pan);}
-  else if(s==='P:right'){pan=Math.min(180,pan+10);send('P:'+pan);}
-  else if(s==='T:up'){tilt=Math.min(180,tilt+10);send('T:'+tilt);}
-  else if(s==='T:down'){tilt=Math.max(0,tilt-10);send('T:'+tilt);}
-  servo();
+/* Writes are serialised; if one is in flight only the newest command is kept. */
+function send(s) {
+  if (!st.connected || !st.cmd) return false;
+  if (st.busy) { st.pending = s; return true; }
+  st.busy = true;
+  const data = new TextEncoder().encode(s);
+  const w = st.cmd.writeValueWithoutResponse ? st.cmd.writeValueWithoutResponse(data) : st.cmd.writeValue(data);
+  Promise.resolve(w).catch((e) => log('Write failed: ' + e.message, 'BLE', true)).finally(() => {
+    st.busy = false;
+    if (st.pending) { const p = st.pending; st.pending = null; send(p); }
+  });
+  return true;
+}
+
+/* ---------- Drive (fail-safe: any doubt sends STOP) ---------- */
+function stopHold() { clearInterval(st.holdTimer); st.holdTimer = null; st.held = null; }
+function drive(c) {
+  stopHold();
+  if (c === 'S') { send('S'); $('mvP').textContent = 'STOPPED'; return; }
+  if (!st.connected) { log('Pair Bluetooth before driving.', 'BLE', true); return; }
+  st.held = c; send(c); $('mvP').textContent = 'MOVING';
+  st.holdTimer = setInterval(() => send(c), CFG.HOLD_MS);
+}
+document.querySelectorAll('.dp button').forEach((b) => {
+  const c = b.dataset.c;
+  b.addEventListener('pointerdown', (e) => { e.preventDefault(); b.setPointerCapture(e.pointerId); drive(c); });
+  if (c !== 'S') ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => b.addEventListener(ev, () => st.held === c && drive('S')));
 });
-// ---------- telemetry: PIR,VIB,SND,BATT,LAT,LON[,SPEED,SATS] ----------
-function bar(id,v,sid){
-  const p=Math.max(0,Math.min(100,v)),hi=p>+$('thr').value;
-  $(id+'Bar').style.width=p+'%';$(id+'Bar').style.background=hi?'var(--rd)':'var(--bl)';
-  $(sid).textContent=hi?'ALERT':'SAFE';$(sid).className=hi?'al':'ok';
-  return hi;
+const KEYS = { ArrowUp: 'F', ArrowDown: 'B', ArrowLeft: 'L', ArrowRight: 'R' };
+addEventListener('keydown', (e) => {
+  if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName) || e.repeat) return;
+  if (e.key === ' ') { e.preventDefault(); drive('S'); }
+  else if (KEYS[e.key]) { e.preventDefault(); drive(KEYS[e.key]); }
+});
+addEventListener('keyup', (e) => { if (KEYS[e.key] && st.held === KEYS[e.key]) drive('S'); });
+addEventListener('blur', () => st.held && drive('S'));
+document.addEventListener('visibilitychange', () => document.hidden && st.held && drive('S'));
+addEventListener('beforeunload', () => send('S'));
+
+/* ---------- Pan / Tilt ---------- */
+function servo(axis, val) {
+  const v = Math.min(180, Math.max(0, Math.round(val)));
+  if (axis === 'P') st.pan = v; else st.tilt = v;
+  $('panV').textContent = st.pan; $('tiltV').textContent = st.tilt; $('pan').value = st.pan; $('tilt').value = st.tilt;
+  const now = performance.now();
+  if (now - st.lastServo >= CFG.SERVO_MS) { st.lastServo = now; send(`${axis}:${v}`); }
+  else { clearTimeout(servo.t); servo.t = setTimeout(() => send(`${axis}:${v}`), CFG.SERVO_MS); }
 }
-function onTele(e){
-  const p=new TextDecoder().decode(e.target.value).trim().split(',').map(Number);
-  if(p.length<6||p.some((x,i)=>i<6&&isNaN(x)))return;
-  const [pir,vib,snd,batt,lat,lon,spd,sat]=p;
-  const pirOn=!!pir;
-  $('pirT').textContent=pirOn?'MOTION DETECTED':'NO MOTION';$('pirS').textContent=pirOn?'ALERT':'SAFE';$('pirS').className=pirOn?'al':'ok';
-  const hv=bar('vib',vib,'vibS'),hs=bar('snd',snd,'sndS');
-  if(pirOn&&!lastPir){clues++;log('PIR motion detected','PIR',true);}
-  if(hv&&!window._hv){clues++;log('Vibration above threshold','VIBRATION',true);}
-  if(hs&&!window._hs){clues++;log('Sound above threshold','MIC',true);}
-  lastPir=pir;window._hv=hv;window._hs=hs;
-  $('sClue').textContent=clues;
-  const any=pirOn||hv||hs;$('monP').textContent=any?'ALERT':'NORMAL';$('monP').className='pill'+(any?' r':'');
-  $('battT').textContent=Math.round(batt)+'%';$('battBar').style.width=Math.round(batt)+'%';
-  setPos(lat,lon,spd,sat);
+$('pan').addEventListener('input', (e) => servo('P', +e.target.value));
+$('tilt').addEventListener('input', (e) => servo('T', +e.target.value));
+document.querySelectorAll('[data-s]').forEach((b) => b.addEventListener('click', () => {
+  ({ 'T:up': () => servo('T', st.tilt + 10), 'T:down': () => servo('T', st.tilt - 10),
+     'P:left': () => servo('P', st.pan - 10), 'P:right': () => servo('P', st.pan + 10),
+     C: () => { servo('P', 90); setTimeout(() => servo('T', 90), CFG.SERVO_MS + 5); } })[b.dataset.s]();
+}));
+
+/* ---------- Telemetry ---------- */
+function onTele(e) {
+  st.buf += new TextDecoder().decode(e.target.value);
+  clearTimeout(st.flushTimer);
+  let i;
+  while ((i = st.buf.indexOf('\n')) >= 0) { parseLine(st.buf.slice(0, i)); st.buf = st.buf.slice(i + 1); }
+  if (st.buf.trim()) st.flushTimer = setTimeout(() => { parseLine(st.buf); st.buf = ''; }, CFG.FLUSH_MS);
+  if (st.buf.length > 200) st.buf = '';
 }
-// ---------- mission ----------
-$('startBtn').onclick=()=>{mission=true;$('sMis').textContent='ACTIVE';log('Mission started','MISSION');};
-$('stopBtn').onclick=()=>{mission=false;drive('S');$('sMis').textContent='STOPPED';log('Mission stopped, motors halted','MISSION',true);};
-// ---------- camera ----------
-function camUrl(p){return 'http://'+$('ip').value.trim()+p;}
-$('camBtn').onclick=()=>{
-  const ip=$('ip').value.trim();if(!ip){log('Enter the camera IP first','CAMERA',true);return;}
-  const img=$('camImg');
-  img.onload=()=>{$('sCam').textContent='CONNECTED';$('liveP').textContent='LIVE';};
-  img.onerror=()=>{$('sCam').textContent='DISCONNECTED';$('liveP').textContent='NOT CONNECTED';img.style.display='none';$('camPh').style.display='';log('Camera stream failed. Check IP and that the PC is on the same WiFi.','CAMERA',true);};
-  img.src=camUrl(':81/stream');img.style.display='block';$('camPh').style.display='none';
-  log('Loading stream from '+ip,'CAMERA');
-};
-function ctl(v,val){fetch(camUrl('/control?var='+v+'&val='+val),{mode:'no-cors'}).catch(()=>{});}
-document.querySelectorAll('[data-v]').forEach(r=>r.oninput=()=>{r.closest('.sl').querySelector('em').textContent=r.value;});
-$('applyCam').onclick=()=>{
-  if(!$('ip').value.trim()){log('Enter the camera IP first','CAMERA',true);return;}
-  ctl('framesize',$('fs').value);
-  document.querySelectorAll('[data-v]').forEach(r=>ctl(r.dataset.v,r.value));
-  document.querySelectorAll('[data-t]').forEach(c=>{const k=c.dataset.t;if(k==='night')ctl('lenc',c.checked?1:0);else ctl(k,c.checked?1:0);});
-  log('Camera settings applied','CAMERA');
-};
-$('camReset').onclick=()=>{
-  $('fs').value=9;
-  document.querySelectorAll('[data-v]').forEach(r=>{r.value=r.dataset.v==='quality'?10:0;r.oninput();});
-  document.querySelectorAll('[data-t]').forEach(c=>c.checked=['awb','agc_gain','vflip'].includes(c.dataset.t));
-};
-// ---------- init ----------
-initMap();setPos(13.6288,79.4192,0,0);$('gpsP').textContent='WAITING';$('sGps').textContent='WAITING';
-log('RESQ-AI dashboard initialized');log('Ultrasonic sensor is not included in this project dashboard');log('GPS tracking module ready','GPS');
+function parseLine(line) {
+  const p = line.trim().split(',').map(Number);
+  if (p.length < 6 || p.slice(0, 6).some((x) => !Number.isFinite(x))) return;
+  applyTele({ pir: !!p[0], vib: p[1], snd: p[2], batt: p[3], lat: p[4], lon: p[5], spd: p[6], sat: p[7] });
+}
+const pct = (v) => Math.max(0, Math.min(100, v));
+function gauge(id, v, sid, key, label) {
+  const hi = pct(v) > +$('thr').value;
+  $(id + 'Bar').style.width = pct(v) + '%'; $(id + 'Bar').style.background = hi ? 'var(--rd)' : 'var(--bl)';
+  $(sid).textContent = hi ? 'ALERT' : 'SAFE'; $(sid).className = hi ? 'al' : 'ok';
+  edge(key, hi, label); return hi;
+}
+function edge(key, on, label) {
+  if (on && !st.alerts[key]) { st.clues++; $('sClue').textContent = st.clues; log(label, key.toUpperCase(), true); }
+  st.alerts[key] = on;
+}
+function applyTele(d) {
+  st.teleAt = Date.now();
+  if (st.teleLost) { st.teleLost = false; log('Telemetry restored', 'BLE'); }
+  $('pirT').textContent = d.pir ? 'MOTION DETECTED' : 'NO MOTION'; $('pirS').textContent = d.pir ? 'ALERT' : 'SAFE'; $('pirS').className = d.pir ? 'al' : 'ok';
+  edge('pir', d.pir, 'PIR motion detected');
+  const hv = gauge('vib', d.vib, 'vibS', 'vib', 'Vibration above threshold');
+  const hs = gauge('snd', d.snd, 'sndS', 'snd', 'Sound above threshold');
+  const any = d.pir || hv || hs; $('monP').textContent = any ? 'ALERT' : 'NORMAL'; $('monP').className = 'pill' + (any ? ' r' : '');
+  const b = Math.round(pct(d.batt)); $('battT').textContent = b + '%'; $('battBar').style.width = b + '%';
+  $('battBar').style.background = b < 20 ? 'var(--rd)' : 'var(--gr)';
+  if (b < 20 && !st.lowBatt) log('Battery low: ' + b + '%', 'BATTERY', true); st.lowBatt = b < 20;
+  setPos(d.lat, d.lon, d.spd, d.sat);
+}
+setInterval(() => {
+  if (st.connected && st.teleAt && !st.teleLost && Date.now() - st.teleAt > CFG.TELE_TIMEOUT) {
+    st.teleLost = true; $('monP').textContent = 'NO DATA'; $('monP').className = 'pill r'; log('No telemetry for 5 s', 'BLE', true);
+  }
+}, 1000);
+
+/* ---------- Mission ---------- */
+$('startBtn').addEventListener('click', () => {
+  if (!st.connected) { log('Cannot start: robot not paired', 'MISSION', true); return; }
+  $('sMis').textContent = 'ACTIVE'; log('Mission started', 'MISSION');
+});
+$('stopBtn').addEventListener('click', () => { drive('S'); $('sMis').textContent = 'STOPPED'; log('Emergency stop sent', 'MISSION', true); });
+
+/* ---------- ESP32-CAM ---------- */
+const IP_RE = /^(?:\d{1,3}\.){3}\d{1,3}(?::\d{1,5})?$|^[a-z0-9.-]+(?::\d{1,5})?$/i;
+const camHost = () => $('ip').value.trim();
+function camOff() {
+  st.camOn = false; $('camImg').removeAttribute('src'); $('camImg').style.display = 'none'; $('camPh').style.display = '';
+  $('sCam').textContent = 'DISCONNECTED'; $('liveP').textContent = 'NOT CONNECTED'; $('camBtn').textContent = 'CONNECT CAMERA';
+}
+function camOn() {
+  const img = $('camImg');
+  img.onload = () => { st.camTry = 0; $('sCam').textContent = 'CONNECTED'; $('liveP').textContent = 'LIVE'; };
+  img.onerror = () => {
+    if (!st.camOn) return;
+    if (st.camTry++ < CFG.CAM_RETRIES) { $('liveP').textContent = 'RETRYING…'; setTimeout(() => st.camOn && (img.src = `http://${camHost()}:81/stream?t=${Date.now()}`), 2000); }
+    else { camOff(); log('Camera unreachable. Check IP and WiFi.', 'CAMERA', true); }
+  };
+  st.camOn = true; st.camTry = 0; img.style.display = 'block'; $('camPh').style.display = 'none';
+  img.src = `http://${camHost()}:81/stream?t=${Date.now()}`; $('camBtn').textContent = 'DISCONNECT CAMERA';
+  log('Loading stream from ' + camHost(), 'CAMERA');
+}
+$('camBtn').addEventListener('click', () => {
+  if (st.camOn) { camOff(); log('Camera disconnected', 'CAMERA'); return; }
+  if (!IP_RE.test(camHost())) { log('Enter a valid camera IP (e.g. 172.20.6.216)', 'CAMERA', true); return; }
+  store.set('ip', camHost()); camOn();
+});
+const ctl = (v, val) => fetch(`http://${camHost()}/control?var=${encodeURIComponent(v)}&val=${encodeURIComponent(val)}`, { mode: 'no-cors' }).catch(() => {});
+document.querySelectorAll('[data-v]').forEach((r) => r.addEventListener('input', () => { r.closest('.sl').querySelector('em').textContent = r.value; }));
+$('applyCam').addEventListener('click', () => {
+  if (!IP_RE.test(camHost())) { log('Enter a valid camera IP first', 'CAMERA', true); return; }
+  ctl('framesize', $('fs').value);
+  document.querySelectorAll('[data-v]').forEach((r) => ctl(r.dataset.v, r.value));
+  document.querySelectorAll('[data-t]').forEach((c) => ctl(c.dataset.t === 'night' ? 'aec2' : c.dataset.t, c.checked ? 1 : 0));
+  log('Camera settings applied', 'CAMERA');
+});
+$('camReset').addEventListener('click', () => {
+  $('fs').value = 9;
+  document.querySelectorAll('[data-v]').forEach((r) => { r.value = r.dataset.v === 'quality' ? 10 : 0; r.dispatchEvent(new Event('input')); });
+  document.querySelectorAll('[data-t]').forEach((c) => { c.checked = ['awb', 'agc_gain', 'vflip'].includes(c.dataset.t); });
+});
+
+/* ---------- Settings (persisted) ---------- */
+$('clr').addEventListener('click', () => { logs.length = 0; st.unread = 0; badge(); renderLog(); });
+[['uSvc', 'svc', CFG.SVC], ['uCmd', 'cmd', CFG.CMD], ['uTel', 'tel', CFG.TEL], ['thr', 'thr', '70'], ['ip', 'ip', '']].forEach(([id, key, def]) => {
+  $(id).value = store.get(key, def); $(id).addEventListener('change', () => store.set(key, $(id).value.trim()));
+});
+
+/* ---------- Init ---------- */
+initMap(); setPos(...CFG.DEFAULT_POS, 0, 0); $('gpsP').textContent = 'WAITING'; $('sGps').textContent = 'WAITING';
+log('RESQ-AI dashboard initialized'); log('Ultrasonic sensor is not included in this project dashboard'); log('GPS tracking module ready', 'GPS');
 badge();
+})();
 </script>
 </body>
 </html>
