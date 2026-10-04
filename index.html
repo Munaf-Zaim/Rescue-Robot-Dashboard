@@ -98,7 +98,7 @@ input[type=range]{width:100%;accent-color:var(--or)}
     <button data-p="msg"><i>✉</i>Message Log<span class="bd" id="nbd">3</span></button>
     <button data-p="set"><i>⚙</i>Dashboard Settings</button>
   </nav>
-  <div class="sf">Supervisor<b>Ms. Divya, M.Tech.</b>Assistant Professor<br><br>RESQ-AI Prototype v1.0</div>
+  <div class="sf">Supervisor<b>Ms. Divya, M.Tech.</b>Assistant Professor<br><br>RESQ-AI Prototype v1.4 (no default GPS)</div>
 </aside>
 <main>
 
@@ -135,7 +135,7 @@ input[type=range]{width:100%;accent-color:var(--or)}
     <div class="card">
       <div class="ch"><div><b>GPS LIVE TRACKING</b><small>Robot location &amp; route</small></div><span class="pill b" id="gpsP">WAITING</span></div>
       <div id="map"></div>
-      <div class="gp"><div><small>Latitude</small><b id="lat">13.628800° N</b></div><div><small>Longitude</small><b id="lon">79.419200° E</b></div><div><small>Speed</small><b id="spd">0.0 km/h</b></div><div><small>Satellites</small><b id="sat">0</b></div></div>
+      <div class="gp"><div><small>Latitude</small><b id="lat">--</b></div><div><small>Longitude</small><b id="lon">--</b></div><div><small>Speed</small><b id="spd">0.0 km/h</b></div><div><small>Satellites</small><b id="sat">0</b></div></div>
       <button class="btn l" style="margin-top:10px" id="gmap">OPEN GOOGLE MAPS</button>
     </div>
     <div class="card">
@@ -189,7 +189,8 @@ input[type=range]{width:100%;accent-color:var(--or)}
   <div class="sl"><div>Service UUID</div><input type="text" id="uSvc" value="4fafc201-1fb5-459e-8fcc-c5c9c331914b"></div>
   <div class="sl"><div>Command characteristic (write)</div><input type="text" id="uCmd" value="beb5483e-36e1-4688-b7f5-ea07361b26a8"></div>
   <div class="sl"><div>Telemetry characteristic (notify) — CSV: PIR,VIB,SND,BATT,LAT,LON[,SPEED,SATS]</div><input type="text" id="uTel" value="beb5483e-36e1-4688-b7f5-ea07361b26a9"></div>
-  <div class="sl"><div>Alert threshold for sound / vibration (%)</div><input type="range" id="thr" min="20" max="100" value="70"></div></div></section>
+  <div class="sl"><div>Alert threshold for sound / vibration (%)</div><input type="range" id="thr" min="20" max="100" value="70"></div>
+  <div class="sl"><div>Last telemetry received (raw)</div><input type="text" id="raw" readonly placeholder="Waiting for data"></div></div></section>
 
 </main></div>
 
@@ -213,7 +214,7 @@ const CFG = Object.freeze({
   RECONNECTS: 3,
   CAM_RETRIES: 3,
   MAX_LOG: 200,
-  DEFAULT_POS: [13.6288, 79.4192],
+  MAP_START: [20.5937, 78.9629], // neutral India view, no marker until a real GPS fix
 });
 const store = {
   get(k, d) { try { return localStorage.getItem('resq.' + k) ?? d; } catch { return d; } },
@@ -263,16 +264,18 @@ document.querySelectorAll('nav button').forEach((b) => b.addEventListener('click
 let map, marker;
 function initMap() {
   if (!window.L) { $('map').textContent = 'Map unavailable offline (Leaflet not loaded).'; return; }
-  map = L.map('map').setView(CFG.DEFAULT_POS, 14);
+  map = L.map('map').setView(CFG.MAP_START, 4);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
-  marker = L.marker(CFG.DEFAULT_POS).addTo(map);
 }
 function setPos(lat, lon, spd, sat) {
-  const fix = Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && (lat !== 0 || lon !== 0);
+  const fix = Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && (lat !== 0 || lon !== 0) && !(Number.isFinite(sat) && sat < 3);
   if (fix) {
     $('lat').textContent = Math.abs(lat).toFixed(6) + '° ' + (lat >= 0 ? 'N' : 'S');
     $('lon').textContent = Math.abs(lon).toFixed(6) + '° ' + (lon >= 0 ? 'E' : 'W');
-    if (marker) { marker.setLatLng([lat, lon]); map.panTo([lat, lon]); }
+    if (map) {
+      if (!marker) { marker = L.marker([lat, lon]).addTo(map); map.setView([lat, lon], 17); }
+      else { marker.setLatLng([lat, lon]); map.panTo([lat, lon]); }
+    }
     $('gmap').dataset.u = `https://www.google.com/maps?q=${lat},${lon}`;
   }
   if (Number.isFinite(spd)) $('spd').textContent = spd.toFixed(1) + ' km/h';
@@ -280,7 +283,7 @@ function setPos(lat, lon, spd, sat) {
   $('gpsP').textContent = fix ? 'GPS LOCKED' : 'NO FIX'; $('sGps').textContent = fix ? 'LOCKED' : 'NO FIX';
 }
 $('gmap').addEventListener('click', () =>
-  window.open($('gmap').dataset.u || `https://www.google.com/maps?q=${CFG.DEFAULT_POS}`, '_blank', 'noopener'));
+  $('gmap').dataset.u ? window.open($('gmap').dataset.u, '_blank', 'noopener') : log('No GPS fix yet', 'GPS', true));
 
 /* ---------- Bluetooth LE ---------- */
 function setBle(on, txt) {
@@ -386,6 +389,7 @@ function onTele(e) {
   if (st.buf.length > 200) st.buf = '';
 }
 function parseLine(line) {
+  $('raw').value = line.trim();
   const p = line.trim().split(',').map(Number);
   if (p.length < 6 || p.slice(0, 6).some((x) => !Number.isFinite(x))) return;
   applyTele({ pir: !!p[0], vib: p[1], snd: p[2], batt: p[3], lat: p[4], lon: p[5], spd: p[6], sat: p[7] });
@@ -473,7 +477,7 @@ $('clr').addEventListener('click', () => { logs.length = 0; st.unread = 0; badge
 });
 
 /* ---------- Init ---------- */
-initMap(); setPos(...CFG.DEFAULT_POS, 0, 0); $('gpsP').textContent = 'WAITING'; $('sGps').textContent = 'WAITING';
+initMap();
 log('RESQ-AI dashboard initialized'); log('Ultrasonic sensor is not included in this project dashboard'); log('GPS tracking module ready', 'GPS');
 badge();
 })();
