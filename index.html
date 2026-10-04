@@ -3,271 +3,323 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>UGV-01 // BLE Field Terminal</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<title>RESQ-AI | MBU Student Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-  :root{
-    --bg:#0a0d09; --panel:#11150f; --line:#26301f;
-    --amber:#ffb000; --amber-dim:#7a5800; --red:#ff4d4d; --cyan:#5ad1c9;
-    --text:#d9d6c9; --muted:#5f6b52;
-    box-sizing:border-box;
-    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-  }
-  *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{
-    margin:0; background:var(--bg); color:var(--text);
-    font-family:'JetBrains Mono', ui-monospace, monospace;
-    background-image:repeating-linear-gradient(rgba(255,176,0,0.025) 0px, rgba(255,176,0,0.025) 1px, transparent 1px, transparent 3px);
-  }
-  .wrap{max-width:1080px; margin:0 auto; padding:18px 16px 40px;}
-  header{display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:16px; flex-wrap:wrap; gap:10px;}
-  h1{font-size:18px; letter-spacing:1px; margin:0; color:var(--amber); font-weight:700;}
-  .sub{color:var(--muted); font-size:11px; margin-top:4px;}
-  .status{display:flex; align-items:center; gap:8px; font-size:12px;}
-  .dot{width:8px; height:8px; border-radius:50%; background:var(--muted); box-shadow:0 0 6px var(--muted);}
-  .dot.on{background:var(--amber); box-shadow:0 0 8px var(--amber);}
-
-  .grid{display:grid; grid-template-columns:1.3fr 1fr; gap:14px;}
-  @media(max-width:760px){.grid{grid-template-columns:1fr;}}
-
-  .panel{background:var(--panel); border:1px solid var(--line); padding:14px;}
-  .panel h2{font-size:11px; letter-spacing:1.5px; color:var(--muted); margin:0 0 12px; font-weight:500;}
-
-  .feed{aspect-ratio:4/3; background:#050603; border:1px solid var(--line); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;}
-  .feed img{width:100%; height:100%; object-fit:cover;}
-  .feed .noSignal{color:var(--muted); font-size:12px; text-align:center; line-height:1.6; padding:0 10px;}
-
-  input[type=text]{background:#0e120c; border:1px solid var(--line); color:var(--amber); font-family:inherit; padding:6px 8px; font-size:12px; width:140px;}
-  button{background:var(--amber-dim); color:var(--amber); border:1px solid var(--amber-dim); font-family:inherit; padding:8px 12px; font-size:11px; cursor:pointer; letter-spacing:.5px;}
-  button:hover{background:var(--amber); color:#0a0d09;}
-  button:disabled{opacity:.4; cursor:not-allowed;}
-  .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-
-  .telemetry{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .tcell{border:1px solid var(--line); padding:10px;}
-  .tcell .label{font-size:10px; color:var(--muted); letter-spacing:1px;}
-  .tcell .val{font-size:20px; color:var(--amber); margin-top:4px;}
-  .tcell.trig{border-color:var(--red);}
-  .tcell.trig .val{color:var(--red);}
-  .bar{height:4px; background:var(--line); margin-top:8px; position:relative;}
-  .bar i{position:absolute; top:0; left:0; height:100%; background:var(--amber); display:block;}
-
-  .dpad{display:grid; grid-template-columns:60px 60px 60px; grid-template-rows:60px 60px 60px; gap:6px; justify-content:center; margin:10px 0;}
-  .dpad button{width:60px; height:60px; font-size:18px; padding:0;}
-  .dpad .stop{background:#3a1414; color:var(--red); border-color:#3a1414;}
-  .dpad .stop:hover{background:var(--red); color:#0a0d09;}
-
-  .sliderCol label{font-size:10px; color:var(--muted); display:block; margin-bottom:6px;}
-  input[type=range]{width:100%; accent-color:var(--amber); background:transparent;}
-
-  .gps{font-size:12px; line-height:1.9;}
-  .gps b{color:var(--amber);}
-  .compass{width:64px; height:64px; margin:0 auto 10px;}
-
-  .log{height:130px; overflow-y:auto; font-size:11px; line-height:1.8;}
-  .log .t{color:var(--muted); margin-right:8px;}
-  .log .e.alert{color:var(--red);}
-  .log .e.info{color:var(--cyan);}
-  ::-webkit-scrollbar{width:6px;}
-  ::-webkit-scrollbar-thumb{background:var(--line);}
+:root{--or:#ed7a1f;--or1:#e96b16;--or2:#f28a2b;--nav:#182128;--navh:#2a353b;--bg:#f4f5f7;--card:#fff;--line:#e6e9ed;--tx:#1b2430;--mu:#7a8594;--bl:#149ecf;--gr:#1cab75;--rd:#d74a5a;--pu:#8662ba}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,system-ui,Arial,sans-serif;background:var(--bg);color:var(--tx);font-size:13px}
+header{background:linear-gradient(90deg,var(--or1),var(--or2));color:#fff;display:flex;align-items:center;gap:16px;padding:14px 24px;flex-wrap:wrap}
+.logo{width:79px;height:79px;border-radius:6px;display:block;flex-shrink:0}
+.ht{flex:1;min-width:240px}.ht small{display:block;letter-spacing:2px;font-weight:700;font-size:12px}
+.ht h1{margin:2px 0;font-size:22px}.ht span{font-size:11px;opacity:.95}
+.hb{display:flex;gap:10px;align-items:center}
+.chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:8px 12px;font-weight:700}
+.sys{display:flex;align-items:center;gap:6px;font-weight:700;font-size:11px}
+.dot{width:8px;height:8px;border-radius:50%;background:#4ade80}.dot.off{background:#fca5a5}
+.layout{display:flex;min-height:calc(100vh - 110px)}
+aside{width:245px;background:var(--nav);color:#cfd6df;padding:18px 12px;flex-shrink:0;display:flex;flex-direction:column}
+.user{display:flex;gap:10px;align-items:center;padding:0 8px 16px;border-bottom:1px solid #2a3644;margin-bottom:14px}
+.av{width:40px;height:40px;border-radius:50%;background:var(--or);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.user b{display:block;color:#fff}.user small{font-size:9px;color:#7f8c9b}
+nav button{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;color:#cfd6df;padding:11px 12px;border-radius:8px;cursor:pointer;font-size:12px;text-align:left}
+nav button:hover{background:var(--navh)}nav button.on{background:var(--navh);color:#fff;font-weight:600}
+nav i{color:var(--or);font-style:normal;width:14px;text-align:center}
+.bd{margin-left:auto;background:var(--or);color:#fff;border-radius:10px;font-size:9px;padding:2px 6px}
+.sf{margin-top:auto;border-top:1px solid #2a3644;padding:14px 8px 0;font-size:9px;color:#7f8c9b}.sf b{display:block;color:#fff;font-size:10px;margin:2px 0}
+main{flex:1;padding:18px 20px;min-width:0}
+.page{display:none}.page.on{display:block}
+.top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+h2.t{font-size:22px;margin:0}.top p{margin:4px 0 0;color:var(--mu)}
+.btn{border:0;border-radius:6px;padding:9px 14px;font-weight:700;font-size:11px;cursor:pointer;color:#fff;background:var(--bl);letter-spacing:.3px}
+.btn.g{background:var(--gr)}.btn.r{background:var(--rd)}.btn.l{background:#fff;color:var(--tx);border:1px solid var(--line)}
+.btn:disabled{opacity:.5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat{display:flex;gap:12px;align-items:center}
+.ic{width:40px;height:40px;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.stat small{font-size:9px;color:var(--mu);text-transform:uppercase}.stat b{display:block;font-size:17px}.stat span{font-size:9px;color:var(--mu)}
+.g2{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-bottom:14px}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.ch b{font-size:13px}.ch small{display:block;color:var(--mu);font-size:9px;margin-top:2px}
+.pill{font-size:9px;font-weight:700;padding:4px 8px;border-radius:10px;background:#e6f7ee;color:var(--gr)}.pill.b{background:#e3f4fc;color:var(--bl)}.pill.r{background:#fde8eb;color:var(--rd)}
+.feed{aspect-ratio:16/10;background:#e9ecef;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.feed img{width:100%;height:100%;object-fit:contain;display:none}.feed .ph b{display:block;color:var(--bl);font-size:16px;margin:8px 0 4px}.feed .ph span{color:var(--mu);font-size:10px}
+.row{display:flex;gap:10px;margin-top:10px}
+input[type=text],select{flex:1;border:1px solid #cfd5dc;border-radius:4px;padding:9px;font-size:13px;width:100%;background:#fff}
+.sl{margin-bottom:8px}.sl div{display:flex;justify-content:space-between;font-size:9px;color:var(--mu)}.sl em{color:var(--or);font-style:normal;font-weight:700}
+input[type=range]{width:100%;accent-color:var(--or)}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 12px}
+.tg label{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:6px;padding:9px;font-size:10px}
+.sn{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.sn .ic{width:30px;height:30px;font-size:14px}.sn div{flex:1}.sn b{font-size:10px;display:block}.sn small{font-size:9px;color:var(--mu)}
+.bar{height:3px;background:#e4e8ec;margin-top:6px}.bar i{display:block;height:100%;background:var(--bl);width:0}
+.ok{color:var(--gr);font-weight:700;font-size:9px}.al{color:var(--rd);font-weight:700;font-size:9px}
+#map{height:290px;border-radius:6px;border:1px solid var(--line);background:#e9ecef}
+.gp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}.gp div{border:1px solid var(--line);border-radius:6px;padding:8px}.gp small{display:block;font-size:8px;color:var(--mu);text-transform:uppercase}.gp b{font-size:11px}
+.g3{display:grid;grid-template-columns:1fr 340px;gap:14px}
+.log div{display:flex;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:10px}
+.log .tm{color:var(--bl);font-weight:700;white-space:nowrap}.log .tag{margin-left:auto;background:#e3f4fc;color:var(--bl);font-size:8px;padding:3px 7px;border-radius:4px}.log .tag.a{background:#fde8eb;color:var(--rd)}
+.dp{display:grid;grid-template-columns:repeat(3,44px);gap:6px;justify-content:center;margin:12px 0}
+.dp button{height:40px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:14px;touch-action:none}.dp button:active{background:var(--or);color:#fff}
+.dp .st{color:var(--rd)}
+.cam{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.cam button{border:1px solid var(--line);background:#fff;border-radius:4px;padding:6px 8px;font-size:9px;cursor:pointer}
+.tbox{border:1px solid var(--line);border-radius:8px;padding:12px}.tbox b{display:block;margin-bottom:4px}.tbox small{color:var(--mu)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tm3{text-align:center}.tm3 .av{width:52px;height:52px;margin:0 auto 10px}.tm3 small{color:var(--mu);font-size:9px}
+.sup{background:#fff6ef;border-left:4px solid var(--or);padding:12px;margin-top:14px}
+@media(max-width:1000px){.stats{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}aside{width:200px}}
+@media(max-width:700px){.layout{flex-direction:column}aside{width:100%}nav{display:flex;flex-wrap:wrap}nav button{width:auto}.sf{display:none}.grid3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="wrap">
+<header>
+  <img class="logo" alt="Mohan Babu University" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABPCAIAAAAlVg/RAAAbuUlEQVR42u18eZAdx3nf7/u6e2bevfcFYHEtQAAEiYO3SPGQSOqiwuiwSrFLlUhJHLmSqqRsJ5FdUZy44krKTkWKclipRHY5sksyTdmWFUskJUo8RFEQKIIAARDAAtjFXtjr7fX2vTdX95c/5mG5IAEeqSQiWZp61TUz2zPTv+/ur79emvuV7tS6ulNJqd/fuHvrHQ+gdxPaOqA1lAEchCAWpEACIcABfHn7szuIXj4XabUCrDawPL90+ImF4SPJzHBZhcaGBKstzIoz3LVl1/0fx/7bYdrgV8AKRK9CdbX2rXYQAkbHlrbebW0LY9XHHnrx8W/s7svrdFnXJQjLA9e/929h353I98DLg4wIgUhAIhZgJgAssAT1lkIrEAAEesV9C2iVQ95DUOz8m3/neq0uPPtXfblAzzmz775P4rYH4PdAGWcta5UJCAEgvY5iCsAleOvbnyFceoU4t440hvasyamU0bGt46Ofrq/OzZx4msN8V3DrfdDtok1MECgInHulOrw1D6IrQQW01s6lFki1D12G17np5nvrpl3f+sFPIF+BMrAwCqQAgPnKhuDtcogQM3uAiIAUvAoG97Ztu579TVtBBqyIhATvrMMRHITBAQqduY5+jYGNcC+r5jvjkFcbriBob+9kKAUREBzeOZxdD1YggIDIeB4DAsUAiOidJMRyybq2cIk45xhpmhkiIsp6iMg7Qpg5wyoASIGUhTC0j0syLO8YvV1DdDkkBoA0dc7JlYKSt7vqOudakkoAKQYExvA6D/sOUOA1tjHzejT8Cp1+Zx7UQsoAQRhgakWJDnDvVNT61YZ7zTj/34hj6WfJzldeMb9mp7ez5GYn8pq8vTTrobcLD1/bEb3iRL9MA8rE+P8w/n6T/f//TYzXs1e/IjrO9DYbPQFyKeRgeZlG1KKXAkAiQu5yWeBWV3ICdi1LmJHDCXgNKq0j/FoU8PJNuow9dPmFXJ43oasJtFySVmnZZAFchoaIiDWInE2IHCSFpCmsg4NLQI5IBBawcJayt1lLRFacg0BcFsU4CzggRQwkLb4z4KxLHZDAOcDBSTYTkUw2nIWzcILWiLI/Zh7CrhdOaeViEkiy9n5Z92s95AC+PJSiK0uU0hqATVNipjBqLi0hsS6KBdLKFzDb1ImADAusEFHGP8JqM2QGwsbC6Hm4OPtcklgAihUEBszrRfnS6NPLIQm1uMdopYgAB3K4lEViCC51eBkqXUmnyK352ysolbUkopVXgEV9dPLsM4ehCyI+YASqmSYJgQ1blhTiQFnskgoAzuUCpDUkC4e/87DXaBjnlINhlQ1bJaAUZEGOW7SnTNDZggEmAWxLkjNxJgdygDgQpHXhFJwH58FpuBbArOtrxgtX4a1ScZxCACvR9MTxp7+XVieVSsUmDHjaY8BJLEgI4iAOksJprdMkkrQB18DS6Nf++++hucLWrlOe1uzykvReMg+XMbCF/2VdbV2yALRmFAQQXhPsV8RMb9I2OviegbVYXVi+eKbiNaZHDiOaY3YuCpVNFYRhDUQBzlkBERgCzWzYYXFq8sjjB/cNjp45BiY4yYJyAYMhBChYRrqmkA6eQ5AlRwlQgHIkUJlKEmJCSiDHsIyUs+APdKklgOEAAQv4ym71tdCyc0kEEvj68LOPFWSxevrQxSNPoLaoHGAdoiYRAE4T63Hg4AjAag1JigsXzj75XY6rxVz64x8+jjQGEVIHOOsiC+cUEmppKeNSdn+dWWplG2AhIrApbGaNJBNy5+CcA9Lsoay3iCOxL9sBfkOR4yU/kbAHxA5RWKl4tjE1+syp1ZMvhT8+t/XgXbjxIDSEEzJGrE8ahjTqK7Cy/MTjMy/8aGT42crGqKejFLoEcQQ/gAhcAokT57QKUhA7MrY1KEfiiJzAOiiARCAiDAGnZFs+AKyINQOUCMGKhjAyd4lUYEkAMgJ+jZBBXykCaXkCo3Ng/7ptO72acdHKn331m9HFR4Lubzz4m/9sy0cfJPEg2niAA9mIo/CJL/3+k1/9n1gYvfHWbXvuufXU3OLQwVugFMIQRGg0tIJWBKxo44MICWAFkrIwk4HSYAdJkcQQISgieBAolzMKIDgFB7gIgFIarCEKzsHFkBSkYATGE8Wvh1YE1AoAHTgGKxAsMFN75A//8o7ruq+9Z9cNB4dOf3fcQ3rq0A+33LAfg9dCAA+ClF20dOzY9A+e2pQ29GDlwC17yqXyS4/+8KXTf/q3t9+KvsFDX3v4yS98qRJGTuuoo/ip3/1854G9mFv65n/8z8PfeyovJqTg4Hvuufszv/idP/rKme88WrJg7cdx7Hleqbfn+nvv2nHbu5Ar/cEXvzh99GixlA+LhV/9rX+t+wf+4Ld/p3b0qE9k28oP/MNf3vzRB5zSDMb6uFBa0cRVFVq1bKQsTs1Em3MTw6crbfnAx8rKdK8LkUQIGygXQAurs+PFVPNqlVfnfbdq8rxYn+UJMg6TFyZgLYCutkqh0Sgt1sjRQrU6/Mhjnbu2xy++OPvsofbpuUBMlPCe9k4QeaurxeWlXDMSDirlUrq0XF+oPnb8xOrwhQMPPtiR2Hh5NZqZ7dy7W4sF02Bb5fTUtA+xZHvyAZIQpgC4K8ZXfCWcnBdfWwUAKkHO1uPlWlgjj2w+QtFRAASMEkNVl84+duwH/+O5Jx4ytMLFaFWvqjYp9xRGz55WVsQ6eB4Y2/dfWx7sjr3UZ1dJ04mnDmN8ee6pFzA61yGGU1fq7OzZuwddnVt37zKFgvU9f7D3I7/xT2//xEelkCukMn9qGMDm7ZvLOc8oGdp3DTb3ouz1796qPKUUFfu7cpsHoAyco6tYKb7y1MFlRtAhR72Dpe4NRUGyecfg7e+7VZWdrwWSIJxdHDl05ti3OnOzRTdfr45aXi31BHfc9y7twbnwlhsOeJohhCRGT3exUozTiEny4PjCxfgb/+vcMz/NRU7HCTvnF/Joa0OSdAwMgKjZbBaLZew/OHDN7kKhZCUttBVRLhTL5ahWT+rNUnsHAh/5XHt3j0cqTWJTyKFUBGte57nfgE3OFm49wBJMutAcq/R2PnnoaGdnR6kvMIVk8vRpzMyg1x9+/ttthYWN7aXxqfH5hcnp2cnt2zp0jk+eOT16fuL6g3ckUQzlwTFsQlGqrHiBJ4mkq80nv/FXy8u1Ui7wYomdLDUaIEbgVxt1Zu4ICgunxv74Qx8P6w3xWHe37//Qvdi1I3nmWZ91QJ4iDaeQsG8Nh1ZbshYQDTHkGIT1wfXr+FsnAMMpQd63Cv3XbN28c2Bk6lzv0Kad12yNFqaOP/LnOHvKjo96YS2QRlfevXT0GT+Pndfu1L5eqlff8+Eb/HbPGcB48D0wa9KGDZeKm/dcQ4Lq7MxKXN+wc2vPYH/CgFHwDIzJ5QtpnCZRrH2vq6+vu7ePtSmUinGaotFIwsjXRjM0MZzL4nwiCfJ5yZITVl4jmrqKfLMDHDEALrVvgF+67o5ra2rl0Uce39g/uHtrx8ypH//0v355/PuHzQo45GKOV2vV+z94R75SePzxx4eu2bZh3+BMOqvbSxAHsQBJ6ppWFj0avO1grq+7zjZpy22+8TrdVqwljYQZEESJIbZR7LQ22wbe/9ufe/A3/vGG63dNnz3/xNf+zD73QlsucJJELgqjBpigqSlxk9OGhKTpdVMwV9FbgTjn4CCu0rHBJlTsbrvnvru2bNkycvqcn9qbt+9onJ+onZkbOzyJqJzUw+1DfafHj780cezmu67ftX87AplbXewa6EOxCGZAUQrDxmlT3jnUd/D6KYXKrqHu6/aGYC8oxkkIWLCzzUbZy/mkPE9j1xD27SmU8m1+vnpxZn5+Nqjkrad9P1efvIj5BczOobqgDMdaVXq7kPOhYN3rRBeXxeQAYJkIFk4FprN3YH5uubc7f+70S9fsvEGm3PSxi08d/nF9YbmUy/uL3csnEuX7uWJux207ij2B8VPLdZ3mZqeqW7bcBGFAu/PnJEqMdaYZ1RcW93z4fS+a9OCNN6PSXVsWaVKhJDI5QpuKq3NTJkxLqaqNTIz/hy/WVpYnT5x0Dqnnuw6/p6tLd3Sp5XDsh8+dlC8VKm3HDh/m2DYLuZ233Iq8D70WXPCrsyv6qiwnzuoXOvsGp+dOBPPx+Oj41PNL4QU7fvxiRRUCr7RSq5185nQaJvluOXp+ZOBALxV1hKYSo6nj9PHRez82CA00m88fO3p8bKxEHC4tP/7883/jA+/99Afvw/zSj//o60cmpyvljgvVuWcOH7rjwLYjp05M1etd7DXqjT/9i78gIiEVO3fLnbf3X7sb/f03f/yjX//CfzH15ve/+/04DoXJ5PIHPvD+rffcA+2JsMXVjLLoq2XsnDhrY6jcxsFrf/CN7/UMbdi3b9/TDx1TUb7YmR/o2lida+Rz3lJ1euql4eXjDTOArnIve3YhDAsqhxXvpRfCz/7eLc20liu2lwY6+267segkzhl/106ptJEy6OhQO7f1vvcOqTf3FL1gyxbofPve68Nl8VNozWVNSqlSV+f2PXuGbr8Fg30gGvzkxz61fevTjz5Wm5srWldsqxy88/Zt77kLbV3wi3ULrVpe5Q3OCloZnZz2YaVQGQjaBizM8WPP7di+84d//ZP91107e3E+zdOmwY2lFbt5W3/Nrh4bPd9YbuRKgVKBVrmli6v9vUWv0ulKZUnja246eM3WIeTySJvI5VCqQBx8ddP733/Tre+GMIoBkiZK/r2/9Cl8/Jegc0gsrEUSoaOtNSXycmhG6Orqv//eT7zrNoQxbAoG2sowGjAIXZDnpoO5illW/+o3fwW6Deyvt2PWQTFBGKnzSV+8cLKzxx44eN2jf/LIJz/+iW03bJ1tztz3vrtH5k7tf2Dvpnt3Duzuir2V0TMjWzdv84uBi/WLPzq/beftm979YdJFUrqxuDRz7Ply3sfSgoT15vTcxdNnaHnFLSzG81WPMTF8sjy4ASury9VqUMjPnDqTq65wM4ImJMnks4docdkXAamJIy+Wy+1YXl04d05HEdJkfmqy4OfOHXmx6BdMucAERS/nfQkESeHicOTFK6AVwJGII7YCUrDp3IXh6thLwVJ45K+Hb7tuP+eDC+dG0pXo5MkTbf3tkNTAs4vy0pPnucbsjG3mn35y+L6P/F2zda9wkFhZnp3795/7XL/vHT165Pzw8BPffuyawS2P/uU3F6cuXhwZKfredx79zoEbb3zs4T8/9txPr9u3/8tf+OLJHx4u+MFsfam7v/c//Yvf6srnx8fH8kTf+tpDfX4+EPfwQw+NXhidnpk58vzz2wc3f/0Pv7rvwD6vXFJ+yxe9Gu2V57cpUs0azEiBSqW7f/sz33r4wvnRDc3S9/7bd8McrayuzvOCbwtP//7hrt42TzxXE71QOH164uQjk+NxuPt9H8kN3Q7xY+uYdHdb5+buTccPHTEFf8OmjWXDG999+40TE9WZ2fHRC6cPHereOoj5BTU7v7VUxuRsObYHdu46d+rkvqH3oFIsM6ZOvHTg/ruPPvPMga3bX/j+kx/8B39/ZWYmYNqwY0eQumK+2N1WgovgiyClLKv7BqMLA7ZIsngZTFsP3rZr7z3haildMX49h2nXFlfMqiok+R7pxDjZETFzQZftzYUdqzO6s+va/Xc+iL5tABulDXOz1pxbXPrFz/y9oV1727v75qpL6dFjF6vzTXFbduz47K/9WhAE51944YUjR86eOjNy+szy8vJN99x5/Pzw7NIC0nh6sXrX++79yU+fGxsbGxkZOTNybuL40f4tW67ff2Bs9MLK4sri+QuLy8vFng6QdVeKGS/XW/LWCqNIiJ3TrB0ITEIxeyYfFKZGpxsXZsuk4ESxUzpNbOizZ9hjJgcLShu+W+0p7vjg/df9wsdRLsP4EieUqtr0zOzFsQMfuD+Myat077vhpoe//e2d77qla8d2KhVNudQAxPNvuv3duw7sr6VJvqezbcuGnbccrGzsy3mmEUVLSbhx586+zVvu/vCHF6MmKuUmUZK6ez/0gAnyTx7+yZ0feH/H7mvgKSGV8fbVkkxSO4ZgM7iUrWleUlwBkxMIw6LhQbDSnPnBj578nS9EJ05XmBgRVBLkg7DutDbWuVis8r1p5XrvffcDv/rrami3FEs2tpoVHOLJaWrMG+2hrR9RgqUVFP3UiC7mw8XloJBHI3RJQmlKpRLCcHJqYsO1e+Dx0tSMUVzo70NtNVmqmXIZUI2FxXxfb1KrrV6cL+XyenBw5fzZck9XZOD1tDujFViEssVKAsGFSGtLj/8JX9n9EEHAThTSFFKHs+VK753vevC3P68PXrcUKA5yTpRLmMlPYhKmxPD5JNx0150P/vo/V9uHkAsgUFrFCSRBPQqPHXk+Wl2aHjubJNFXvvyV2uT8ynIzdRiZmRFlXhg+M76w8KMTx9HWPjx8vtGM4Pmr1cWZs+Pnj5+G6PHp2Sef+2kUJ/CD4Qujq4269b1z83OzcQTDzx4/NjIx4SxIlCQ2Wwd5o3ora9GWiIYGTAKF9jb/5oOf/Defzx3YO+yiZqE400xD5btS2zzpcaKDn/iFD/zbf4etO0T7YEUixPACUA6rcUhBjgtFv620mjQf+NhHPvf5f2mZU2b4ft0lO/buffq5Q5X+XpCLxPqFIjTn8sUf/+RQnFgo3rRjqHvLptOjI1DUTNIwTYL29o7BgdJADzTdcs/dP33xxVxnB4i0Mq+rt/6a3grgCEQgSUFgUgpagRkMz6Pu9l237mv6PLOwIhwsxS4qloJrd9/5mU/f+E/+EQoF+BXyPLAAKWwDSJxLle+dODcSsenq605s0kjCd7//3nxXxWqZmZ/tHejPVyr1xur1B/Yro1aqC2fHRrv6eiNx7Z2dq3G0adeu8dHRsxfOD27bWikU5+Zm+jdvtIyxmclKT1euVFxaXHRiN27aiKyShNUVPdAV9HZt+YwkFZuIUkRe9rcoSjy2pFPMzy8dOj525ESy1Cj39W9/1818/W6QRS6XfSmJY+MRKL0kJArWk8QplUIcLEGZuNlgX+nAT9OUrFOK4ARKI7VIU7CC72Vilq42dbEA5WwUKkcwxtrYsTJaJ7E1xqRxzCD29CVh5bUig/V6q68cNVoQA8KkDIgdQAIGfM+IUy51XO5qu/89bTcdtCsN1dkJj6EsjB/FCQWKCMZ4CFPonFVYtUtKKQMNJ8p4SGMoBWe9QhFwzSQVkZznw1mQwAm0sSAIK7B1zlrrlQtJImIdKy8lcS5NmALjw8EIbGy17yepTZ0F2Dnn6zeRPYfmNd3lRGwYhS4So7TAWpsYpYUkTuomn/NLxTCOFUkUxV7qRHm1lZqvTU7YpS6JxCmbKpvYNLHsw6ws1gKjHStrrUYY2oRyfuosUpvGiSJirevhaj6flzSO66u5fDGM42ackFY2jrTWjpyDxGLjONWR5D0/sqlNohQS5HOaWbO6ylSHNLK1aXLr50muVZHBIsLCOT+AhlIscEAAJ6yUToxR2lqbzxWcc0FBWSsO0pUPBEDqWMTXCjCJMDOniQuMJzlN2UoAs3NOi5BRAMQ6z/O00kmadOQCZrbW5goBM7MmZmYmF2jFKk5i1tpaq5RSOZAgIEPMqU3BlCaJZzzACcnlMz92gF5fW35pYR5EsOKYOHNF1bm5hYWF/v7+KIpGR0eHhoZqtZrneQP9AxPjE7lcLpfLjY+PE9HWrVsNwMzCcvLECaXUli1bpqamBgYGnHPzs7PFYjEMw872jmMvHNm2bVuSJNVqtbe3t9FoxHG8YcMGpVRWqjY5OamUUkrFcWx8z/O8arVaLBYrlcrE6OiGDRsmZ2a6urrCMBwbG9u5c2cURWEYbty4cf2yn9BllQh8tdJPay0A66y1dmVlZXp6utFoLC4ujoyMLC8vT01NzczMrNZXp6amJicnrbUzMzMTExO1Wi1JEiJKkmR4eHhiYqJer8/MzNRqtXq9Pjs7u7CwsLy83Gg0RkdHM4TLy8thGFar1enpaaJWSBCG4cjIyMWLF6vVarVatdbW6/XJyclqteqcW1lZaTabY2NjzWYzDMPl5WXn3OLi4vT0tHPOOfdm1oFEhGB0y2tprSuVSpqmpVLJ87w9e/a0t7dna7zM3Nvby8xKqaGhIWttLpfLKEVEQ0NDnufl8/ne3l7P84iovb3d9/1SqWSM2bZtW6FQ8H3f87xisSgiuVwuSZJMvjzP6+npKRaLxpgoiorFIhFt3ry5UCgwc3d3tzFm48aN+Xw+CIJdu3aVy+VGo6G1blUAXGXBOvNAm6BKIJVRhYgchNcVKcRJLCKe51lrtdLWWREREaNNatOMQBl1kjRhZsXKOrtWVpSmaUaROI4BeJ5HgjiOlVLZ+DICZTTiTEeJwjD0PK8lZUyZnq9VrjG3fIy1VmtNoCRNiEgpRaBsoZOgBMJCcCFsfeF7f3xl3mazpSRNMgxKqQxAC232gWwBlzmjS2rTTN8Uq6x4NHs2takxJitV8DyPQNZZRez7vohkCDOQSqm1ASRJEgRBpk3GmCwLmpmuNaGzYplYWDJ+eMbLVI+I+HUyrJcKslsRFjEBnjZZEYBmRYAi9o1HgG+8bEmcAJJWoQCDFLGnjTgnzmVvgIgiFuta5RXSajNyZCAztJlYrUmyMS0qZ8wU59beD5E0SdZGpVkxKBtY9l1F/Oay52marp1k48gGR0SZNLbUWyTjp3NujTNrjFovmWtvWMOQieLazda82pjWqqpzaxKbdc5okb3fGLNmTbNhZI8w85uo6szwZN9YM1Frhb7ZSaZLryj1u2J583r8r+izdn+tz9rJq1+4nhav/sraSfbIa9cgvgX3HP4/PH6O9udof47252jfDmjdK8pe3xG4+PJS7BQkGiygFLCpE7BxyIqg8NbanfpmKuIFsAIiIgGBnLXMAkoECaO2cqnUkC8VVNq31i4BetPdNcHF4pyAwFohDiFxWl/RWFlFO0gpTcomTnECOIjB1QvHfrY7It4AWoc0NkpBmWbiAsOkFBqRrKywO/oc0hA2BaAUI7VrOvzWad+8VjkQYkA0U1b8NXMhnB7jQ49/E405uCYETgDtQfkg7bBWP/uzb9/UT8DQXugQZpsz0hCuhrEXV8ZPsl2dWj30fURV2CZTVurOcqX/8/AzbN9U52zXBWulAB+ANDF55uLzT5mkqj5/d+/U+Qtd2lPdnQgMmNLUKjaXCv7fjj8HRIxUJYmWOmZPzz329Ykj3+stQBvXqMR46TsP7SHRe29Gz2aj8kijt1rgQW+8pZSkCbJsgTNHzz328Nzxp7aUfA8hXfxsr7Iqsl7DK+qBzX0Hbs3vOYhKD0yAbM6ZzZvfLptyRSAxmosYHZ574ej82VNqaapETZ9jgaWZX+7KCSs2TdCCRZW9ps4HhQ6lg2x+vJZkfvVM+vUZcpWeV9sDerX7V3sPrUswrW36J5eEyzO+Swo2zUtSIJdTZGETcf8bCo67SpPe1pQAAAAASUVORK5CYII=">
+  <div class="ht"><small>MBU STUDENT DASHBOARD</small><h1>RESQ-AI — AI-Based Intelligent Search &amp; Rescue Robot</h1><span>Electronics &amp; Instrumentation Engineering • Mohan Babu University</span></div>
+  <div class="hb"><div class="chip">🔔 <span id="hbell">3</span></div><div class="sys"><span class="dot off" id="hdot"></span><span id="hsys">BLE NOT PAIRED</span></div></div>
+</header>
+<div class="layout">
+<aside>
+  <div class="user"><div class="av">R</div><div><b>M. Revanth</b><small>Final Year • EIE</small></div></div>
+  <nav>
+    <button class="on" data-p="dash"><i>▦</i>Dashboard</button>
+    <button data-p="det"><i>◆</i>Project Details</button>
+    <button data-p="about"><i>ⓘ</i>About Project</button>
+    <button data-p="team"><i>👤</i>Team Members</button>
+    <button data-p="msg"><i>✉</i>Message Log<span class="bd" id="nbd">3</span></button>
+    <button data-p="set"><i>⚙</i>Dashboard Settings</button>
+  </nav>
+  <div class="sf">Supervisor<b>Ms. Divya, M.Tech.</b>Assistant Professor<br><br>RESQ-AI Prototype v1.0</div>
+</aside>
+<main>
 
-  <header>
-    <div>
-      <h1>UGV-01 :: SEARCH &amp; RESCUE UNIT</h1>
-      <div class="sub">BLE FIELD TERMINAL — v0.2</div>
-    </div>
-    <div class="status">
-      <span class="dot" id="dot"></span>
-      <span id="statusText">NOT PAIRED</span>
-    </div>
-  </header>
-
-  <div class="row" style="margin-bottom:14px;">
-    <button id="bleBtn" onclick="toggleBle()">⚡ PAIR VIA BLUETOOTH</button>
-    <span style="width:16px;"></span>
-    <span style="font-size:11px; color:var(--muted);">CAMERA IP (WiFi)</span>
-    <input type="text" id="ipInput" placeholder="192.168.1.50">
-    <button onclick="connectCam()">LOAD FEED</button>
+<section class="page on" id="dash">
+  <div class="top"><div><h2 class="t">Rescue Mission Control</h2><p>Monitor the robot, camera, survivor-sensing modules and live location.</p></div>
+    <div><button class="btn l" id="bleBtn">⚡ PAIR BLUETOOTH</button> <button class="btn g" id="startBtn">▶ START MISSION</button> <button class="btn r" id="stopBtn">■ STOP</button></div></div>
+  <div class="stats">
+    <div class="card stat"><div class="ic" style="background:var(--bl)">◉</div><div><small>Camera</small><b id="sCam">DISCONNECTED</b><span>ESP32-CAM OV3660</span></div></div>
+    <div class="card stat"><div class="ic" style="background:var(--gr)">♥</div><div><small>Mission</small><b id="sMis">READY</b><span>Search mode</span></div></div>
+    <div class="card stat"><div class="ic" style="background:var(--or)">⌁</div><div><small>Survivor clues</small><b id="sClue">0</b><span>Sensor indications</span></div></div>
+    <div class="card stat"><div class="ic" style="background:var(--pu)">✦</div><div><small>GPS</small><b id="sGps">WAITING</b><span id="sSat">0 satellites</span></div></div>
   </div>
 
-  <div class="grid">
-    <div style="display:flex; flex-direction:column; gap:14px;">
-
-      <div class="panel">
-        <h2>LIVE FEED — CAM01 (WiFi)</h2>
-        <div class="feed">
-          <img id="camImg" style="display:none;">
-          <div class="noSignal" id="noSignal">NO SIGNAL<br>Enter ESP32-CAM IP above and load feed</div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>MOVEMENT CONTROL (BLE)</h2>
-        <div class="dpad">
-          <span></span>
-          <button onmousedown="cmd('F')" onmouseup="cmd('S')" ontouchstart="cmd('F')" ontouchend="cmd('S')">▲</button>
-          <span></span>
-          <button onmousedown="cmd('L')" onmouseup="cmd('S')" ontouchstart="cmd('L')" ontouchend="cmd('S')">◀</button>
-          <button class="stop" onclick="cmd('S')">■</button>
-          <button onmousedown="cmd('R')" onmouseup="cmd('S')" ontouchstart="cmd('R')" ontouchend="cmd('S')">▶</button>
-          <span></span>
-          <button onmousedown="cmd('B')" onmouseup="cmd('S')" ontouchstart="cmd('B')" ontouchend="cmd('S')">▼</button>
-          <span></span>
-        </div>
-        <div class="sub">Hold to move, release to stop. Sends single-char commands F/B/L/R/S.</div>
-      </div>
-
-      <div class="panel">
-        <h2>GIMBAL / CAMERA PAN-TILT (BLE)</h2>
-        <div class="row" style="gap:20px;">
-          <div class="sliderCol" style="flex:1;">
-            <label>PAN — <span id="panVal">90</span>°</label>
-            <input type="range" min="0" max="180" value="90" oninput="setServo('P',this.value)">
-          </div>
-          <div class="sliderCol" style="flex:1;">
-            <label>TILT — <span id="tiltVal">90</span>°</label>
-            <input type="range" min="0" max="180" value="90" oninput="setServo('T',this.value)">
-          </div>
-        </div>
-      </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><b>ESP32-CAM LIVE STREAM</b><small>OV3660 • Live video</small></div><span class="pill" id="liveP">NOT CONNECTED</span></div>
+      <div class="feed"><img id="camImg" alt="stream"><div class="ph" id="camPh"><div style="font-size:30px;color:var(--bl)">◎</div><b>ESP32-CAM OV3660</b><span>Enter IP address and connect</span></div></div>
+      <div class="row"><input type="text" id="ip" placeholder="172.20.6.216"><button class="btn" id="camBtn">CONNECT CAMERA</button></div>
     </div>
-
-    <div style="display:flex; flex-direction:column; gap:14px;">
-      <div class="panel">
-        <h2>GPS POSITION (BLE)</h2>
-        <svg class="compass" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="46" fill="none" stroke="#26301f" stroke-width="2"/>
-          <line x1="50" y1="8" x2="50" y2="18" stroke="#ffb000" stroke-width="2"/>
-          <text x="50" y="6" fill="#5f6b52" font-size="8" text-anchor="middle">N</text>
-          <circle cx="50" cy="50" r="4" fill="#ffb000"/>
-        </svg>
-        <div class="gps">
-          LAT: <b id="lat">--</b><br>
-          LON: <b id="lon">--</b>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>SENSOR TELEMETRY (BLE)</h2>
-        <div class="telemetry">
-          <div class="tcell" id="pirCell"><div class="label">PIR MOTION</div><div class="val" id="pirVal">--</div></div>
-          <div class="tcell" id="vibCell"><div class="label">VIBRATION</div><div class="val" id="vibVal">--</div><div class="bar"><i id="vibBar" style="width:0%"></i></div></div>
-          <div class="tcell" id="sndCell"><div class="label">SOUND</div><div class="val" id="sndVal">--</div><div class="bar"><i id="sndBar" style="width:0%"></i></div></div>
-          <div class="tcell"><div class="label">BATTERY</div><div class="val" id="battVal">--%</div><div class="bar"><i id="battBar" style="width:0%"></i></div></div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>EVENT LOG</h2>
-        <div class="log" id="logBox"></div>
-      </div>
+    <div class="card">
+      <div class="ch"><div><b>CAMERA ADJUSTMENT</b><small>CameraWebServer controls</small></div><button class="btn l" id="camReset" style="padding:5px 9px">RESET</button></div>
+      <div class="sl"><div>Resolution</div><select id="fs"><option value="5">QVGA (320×240)</option><option value="8">VGA (640×480)</option><option value="9" selected>SVGA (800×600)</option><option value="10">XGA (1024×768)</option><option value="12">SXGA (1280×1024)</option></select></div>
+      <div class="sl"><div>Quality <em>10</em></div><input type="range" data-v="quality" min="4" max="63" value="10"></div>
+      <div class="sl"><div>Brightness <em>0</em></div><input type="range" data-v="brightness" min="-2" max="2" value="0"></div>
+      <div class="sl"><div>Contrast <em>0</em></div><input type="range" data-v="contrast" min="-2" max="2" value="0"></div>
+      <div class="sl"><div>Saturation <em>0</em></div><input type="range" data-v="saturation" min="-2" max="2" value="0"></div>
+      <div class="sl"><div>Sharpness <em>0</em></div><input type="range" data-v="sharpness" min="-2" max="2" value="0"></div>
+      <div class="tg"><label>AWB <input type="checkbox" data-t="awb" checked></label><label>AGC <input type="checkbox" data-t="agc_gain" checked></label><label>Night Mode <input type="checkbox" data-t="night"></label><label>V-Flip <input type="checkbox" data-t="vflip" checked></label></div>
+      <button class="btn" style="width:100%;padding:12px" id="applyCam">APPLY CAMERA SETTINGS</button>
     </div>
   </div>
-</div>
 
+  <div class="g2" style="grid-template-columns:1fr 340px">
+    <div class="card">
+      <div class="ch"><div><b>GPS LIVE TRACKING</b><small>Robot location &amp; route</small></div><span class="pill b" id="gpsP">WAITING</span></div>
+      <div id="map"></div>
+      <div class="gp"><div><small>Latitude</small><b id="lat">13.628800° N</b></div><div><small>Longitude</small><b id="lon">79.419200° E</b></div><div><small>Speed</small><b id="spd">0.0 km/h</b></div><div><small>Satellites</small><b id="sat">0</b></div></div>
+      <button class="btn l" style="margin-top:10px" id="gmap">OPEN GOOGLE MAPS</button>
+    </div>
+    <div class="card">
+      <div class="ch"><div><b>SURVIVOR SENSOR MONITOR</b><small>Only selected project sensors</small></div><span class="pill" id="monP">NORMAL</span></div>
+      <div class="sn"><div class="ic" style="background:#e3f4fc;color:var(--bl)">♫</div><div><b>MICROPHONE</b><small>Voice / HELP / sound</small><div class="bar"><i id="sndBar"></i></div></div><span class="ok" id="sndS">SAFE</span></div>
+      <div class="sn"><div class="ic" style="background:#fff3e6;color:var(--or)">≈</div><div><b>VIBRATION SENSOR</b><small>Tapping / knocking indication</small><div class="bar"><i id="vibBar"></i></div></div><span class="ok" id="vibS">SAFE</span></div>
+      <div class="sn"><div class="ic" style="background:#fff3e6;color:var(--or)">◉</div><div><b>PIR SENSOR</b><small id="pirT">NO MOTION</small></div><span class="ok" id="pirS">SAFE</span></div>
+      <div class="sn"><div class="ic" style="background:#f0e8fb;color:var(--pu);font-weight:800">AI</div><div><b>AI HUMAN DETECTION</b><small>Camera-based result</small></div><span class="ok">WAITING</span></div>
+      <div class="sn" style="border:0"><div class="ic" style="background:#e6f7ee;color:var(--gr)">▮</div><div><b>BATTERY</b><small id="battT">--%</small><div class="bar"><i id="battBar" style="background:var(--gr)"></i></div></div></div>
+    </div>
+  </div>
+
+  <div class="g3">
+    <div class="card"><div class="ch"><div><b>MESSAGE / RESCUE LOG</b><small>Notifications from the mission system</small></div><button class="btn l" id="clr" style="padding:5px 9px">CLEAR</button></div><div class="log" id="logD"></div></div>
+    <div class="card">
+      <div class="ch"><div><b>ROBOT MOVEMENT</b><small>Bluetooth control • hold to move</small></div><span class="pill b" id="mvP">STOPPED</span></div>
+      <div class="dp">
+        <span></span><button data-c="F">▲</button><span></span>
+        <button data-c="L">◀</button><button class="st" data-c="S">■</button><button data-c="R">▶</button>
+        <span></span><button data-c="B">▼</button><span></span>
+      </div>
+      <div class="cam"><button data-s="T:up">CAM ▲</button><button data-s="P:left">CAM ◀</button><button data-s="C">CENTER</button><button data-s="P:right">CAM ▶</button><button data-s="T:down">CAM ▼</button></div>
+      <div class="sl" style="margin-top:12px"><div>Pan <em id="panV">90</em>°</div><input type="range" id="pan" min="0" max="180" value="90"></div>
+      <div class="sl"><div>Tilt <em id="tiltV">90</em>°</div><input type="range" id="tilt" min="0" max="180" value="90"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="det"><div class="card"><h2 class="t">Project Details</h2>
+  <p><b>Project:</b> RESQ-AI – AI-Based Intelligent Search and Rescue Robot</p><p><b>Department:</b> Electronics &amp; Instrumentation Engineering</p><p><b>University:</b> Mohan Babu University</p>
+  <p><b>Core platform:</b> ESP32-CAM based mobile rescue robot with computer vision, sensor monitoring, GPS tracking and wireless dashboard.</p>
+  <div class="grid3"><div class="tbox"><b>ESP32-CAM</b><small>OV3660 live camera</small></div><div class="tbox"><b>AI Vision</b><small>Human detection</small></div><div class="tbox"><b>Acoustic Clues</b><small>Microphone + vibration</small></div><div class="tbox"><b>PIR</b><small>Movement indication</small></div><div class="tbox"><b>GPS</b><small>Robot location</small></div><div class="tbox"><b>Dashboard</b><small>Mission monitoring</small></div></div></div></section>
+
+<section class="page" id="about"><div class="card"><h2 class="t">About Project</h2>
+  <p>RESQ-AI is a ground robot that searches disaster and flood areas for survivors. It streams live video from an ESP32-CAM over WiFi, receives sensor readings, battery and GPS position over Bluetooth LE, and is driven from this dashboard.</p>
+  <p>Survivor clues come from PIR motion, vibration (tapping), sound level and AI human detection on the video feed.</p></div></section>
+
+<section class="page" id="team"><div class="card"><h2 class="t">Project Team</h2>
+  <div class="grid3">
+    <div class="tbox tm3"><div class="av">KV</div><b>K. Varshini Chowdary</b><small>23101a040018</small></div>
+    <div class="tbox tm3"><div class="av">MR</div><b>Mudhigolam Revanth</b><small>23101a040022</small></div>
+    <div class="tbox tm3"><div class="av">MM</div><b>M MD Munaf</b><small>23101a040011</small></div>
+    <div class="tbox tm3"><div class="av">YM</div><b>Yalla Madhav Krishna</b><small>23101a040020</small></div></div>
+  <div class="sup"><b>Supervisor</b><br>Ms. Divya, M.Tech.<br><small>Assistant Professor, Department of ECE</small></div></div></section>
+
+<section class="page" id="msg"><div class="card"><div class="ch"><div><h2 class="t">Message Log</h2><p style="color:var(--mu)">All dashboard notifications and rescue events appear here.</p></div></div><div class="log" id="logM"></div></div></section>
+
+<section class="page" id="set"><div class="card"><h2 class="t">Dashboard Settings</h2>
+  <p style="color:var(--mu)">BLE profile — must match the ESP32 firmware.</p>
+  <div class="sl"><div>Service UUID</div><input type="text" id="uSvc" value="4fafc201-1fb5-459e-8fcc-c5c9c331914b"></div>
+  <div class="sl"><div>Command characteristic (write)</div><input type="text" id="uCmd" value="beb5483e-36e1-4688-b7f5-ea07361b26a8"></div>
+  <div class="sl"><div>Telemetry characteristic (notify) — CSV: PIR,VIB,SND,BATT,LAT,LON[,SPEED,SATS]</div><input type="text" id="uTel" value="beb5483e-36e1-4688-b7f5-ea07361b26a9"></div>
+  <div class="sl"><div>Alert threshold for sound / vibration (%)</div><input type="range" id="thr" min="20" max="100" value="70"></div></div></section>
+
+</main></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-// ---- BLE profile: must match ESP32 firmware ----
-const SERVICE_UUID   = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-const CMD_CHAR_UUID  = "beb5483e-36e1-4688-b7f5-ea07361b26a8"; // write
-const TELE_CHAR_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a9"; // notify, CSV: PIR,VIB,SND,BATT,LAT,LON
-
-let bleDevice, cmdChar, connected = false;
-
-function log(msg, cls){
-  const box = document.getElementById('logBox');
-  const t = new Date().toLocaleTimeString();
-  box.insertAdjacentHTML('afterbegin', `<div class="e ${cls||''}"><span class="t">${t}</span>${msg}</div>`);
+const $=id=>document.getElementById(id);
+let dev,cmdChar,connected=false,clues=0,unread=3,mission=false,lastPir=0;
+const logs=[];
+// ---------- navigation ----------
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));
+  if(b.dataset.p==='msg'){unread=0;badge();} if(b.dataset.p==='dash'&&map)setTimeout(()=>map.invalidateSize(),50);
+});
+function badge(){$('nbd').textContent=unread;$('nbd').style.display=unread?'':'none';$('hbell').textContent=unread;}
+// ---------- log ----------
+function log(msg,tag,alert){
+  logs.unshift({t:new Date().toLocaleTimeString(),msg,tag:tag||'SYSTEM',a:alert});
+  if(!$('msg').classList.contains('on')){unread++;badge();}
+  renderLog();
 }
-function setStatus(on, text){
-  document.getElementById('dot').className = 'dot' + (on ? ' on' : '');
-  document.getElementById('statusText').textContent = text;
+function renderLog(){
+  const h=logs.length?logs.map(l=>`<div><span class="tm">${l.t}</span>${l.msg}<span class="tag ${l.a?'a':''}">${l.tag}</span></div>`).join(''):'<div>No messages.</div>';
+  $('logD').innerHTML=h;$('logM').innerHTML=h;
 }
-
-async function toggleBle(){
-  if(connected){ bleDevice?.gatt.disconnect(); return; }
-  if(!navigator.bluetooth){
-    log('Web Bluetooth not supported — use Chrome on desktop/Android, and serve this page over HTTPS or localhost.', 'alert');
-    return;
-  }
+$('clr').onclick=()=>{logs.length=0;unread=0;badge();renderLog();};
+// ---------- map ----------
+let map,marker;
+function initMap(){
+  if(!window.L){$('map').innerHTML='<p style="padding:20px;color:#7a8594">Map needs internet (Leaflet).</p>';return;}
+  map=L.map('map').setView([13.6288,79.4192],14);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+  marker=L.marker([13.6288,79.4192]).addTo(map);
+}
+function setPos(lat,lon,spd,sat){
+  $('lat').textContent=Math.abs(lat).toFixed(6)+'° '+(lat>=0?'N':'S');
+  $('lon').textContent=Math.abs(lon).toFixed(6)+'° '+(lon>=0?'E':'W');
+  if(!isNaN(spd))$('spd').textContent=spd.toFixed(1)+' km/h';
+  if(!isNaN(sat)){$('sat').textContent=sat;$('sSat').textContent=sat+' satellites';}
+  const fix=lat!==0||lon!==0;
+  $('gpsP').textContent=fix?'GPS LOCKED':'NO FIX';$('sGps').textContent=fix?'LOCKED':'NO FIX';
+  if(fix&&map){marker.setLatLng([lat,lon]);map.panTo([lat,lon]);}
+  $('gmap').dataset.u=`https://www.google.com/maps?q=${lat},${lon}`;
+}
+$('gmap').onclick=()=>window.open($('gmap').dataset.u||'https://www.google.com/maps?q=13.6288,79.4192','_blank');
+// ---------- BLE ----------
+function setBle(on,txt){$('hdot').className='dot'+(on?'':' off');$('hsys').textContent=txt;$('bleBtn').textContent=on?'⏻ DISCONNECT':'⚡ PAIR BLUETOOTH';}
+$('bleBtn').onclick=async()=>{
+  if(connected){dev.gatt.disconnect();return;}
+  if(!navigator.bluetooth){log('Web Bluetooth not supported. Use Chrome/Edge and open this page on http://localhost or HTTPS.','BLE',true);return;}
   try{
-    bleDevice = await navigator.bluetooth.requestDevice({
-      filters: [{ services: [SERVICE_UUID] }]
-    });
-    bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
-    const server = await bleDevice.gatt.connect();
-    const service = await server.getPrimaryService(SERVICE_UUID);
-    cmdChar = await service.getCharacteristic(CMD_CHAR_UUID);
-    const teleChar = await service.getCharacteristic(TELE_CHAR_UUID);
-    await teleChar.startNotifications();
-    teleChar.addEventListener('characteristicvaluechanged', onTelemetry);
-
-    connected = true;
-    setStatus(true, 'PAIRED — ' + bleDevice.name);
-    document.getElementById('bleBtn').textContent = '⏻ DISCONNECT';
-    log('Connected to ' + bleDevice.name, 'info');
-  }catch(e){
-    log('Pairing failed or cancelled: ' + e.message, 'alert');
-  }
+    const S=$('uSvc').value.trim();
+    dev=await navigator.bluetooth.requestDevice({filters:[{services:[S]}]});
+    dev.addEventListener('gattserverdisconnected',()=>{connected=false;setBle(false,'BLE NOT PAIRED');log('Bluetooth disconnected','BLE',true);});
+    const srv=await dev.gatt.connect(),svc=await srv.getPrimaryService(S);
+    cmdChar=await svc.getCharacteristic($('uCmd').value.trim());
+    const tc=await svc.getCharacteristic($('uTel').value.trim());
+    await tc.startNotifications();tc.addEventListener('characteristicvaluechanged',onTele);
+    connected=true;setBle(true,'SYSTEM ONLINE — '+dev.name);log('Connected to '+dev.name,'BLE');
+  }catch(e){log('Pairing failed: '+e.message,'BLE',true);}
+};
+function send(s){
+  if(!connected||!cmdChar)return;
+  cmdChar.writeValueWithoutResponse(new TextEncoder().encode(s)).catch(e=>log('Write failed: '+e.message,'BLE',true));
 }
-function onDisconnected(){
-  connected = false;
-  setStatus(false, 'NOT PAIRED');
-  document.getElementById('bleBtn').textContent = '⚡ PAIR VIA BLUETOOTH';
-  log('Disconnected', 'alert');
+function drive(c){send(c);$('mvP').textContent=c==='S'?'STOPPED':'MOVING';}
+document.querySelectorAll('.dp button').forEach(b=>{
+  const c=b.dataset.c;
+  b.addEventListener('pointerdown',e=>{e.preventDefault();drive(c);});
+  if(c!=='S'){['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>drive('S')));}
+});
+window.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.repeat)return;const m={ArrowUp:'F',ArrowDown:'B',ArrowLeft:'L',ArrowRight:'R',' ':'S'}[e.key];if(m){e.preventDefault();drive(m);}});
+window.addEventListener('keyup',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))drive('S');});
+let pan=90,tilt=90;
+function servo(){$('panV').textContent=pan;$('tiltV').textContent=tilt;$('pan').value=pan;$('tilt').value=tilt;}
+$('pan').oninput=e=>{pan=+e.target.value;servo();send('P:'+pan);};
+$('tilt').oninput=e=>{tilt=+e.target.value;servo();send('T:'+tilt);};
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{
+  const s=b.dataset.s;
+  if(s==='C'){pan=90;tilt=90;send('P:90');send('T:90');}
+  else if(s==='P:left'){pan=Math.max(0,pan-10);send('P:'+pan);}
+  else if(s==='P:right'){pan=Math.min(180,pan+10);send('P:'+pan);}
+  else if(s==='T:up'){tilt=Math.min(180,tilt+10);send('T:'+tilt);}
+  else if(s==='T:down'){tilt=Math.max(0,tilt-10);send('T:'+tilt);}
+  servo();
+});
+// ---------- telemetry: PIR,VIB,SND,BATT,LAT,LON[,SPEED,SATS] ----------
+function bar(id,v,sid){
+  const p=Math.max(0,Math.min(100,v)),hi=p>+$('thr').value;
+  $(id+'Bar').style.width=p+'%';$(id+'Bar').style.background=hi?'var(--rd)':'var(--bl)';
+  $(sid).textContent=hi?'ALERT':'SAFE';$(sid).className=hi?'al':'ok';
+  return hi;
 }
-
-function writeCmd(str){
-  if(!connected || !cmdChar) return;
-  const enc = new TextEncoder();
-  cmdChar.writeValueWithoutResponse(enc.encode(str)).catch(e => log('Write failed: ' + e.message, 'alert'));
+function onTele(e){
+  const p=new TextDecoder().decode(e.target.value).trim().split(',').map(Number);
+  if(p.length<6||p.some((x,i)=>i<6&&isNaN(x)))return;
+  const [pir,vib,snd,batt,lat,lon,spd,sat]=p;
+  const pirOn=!!pir;
+  $('pirT').textContent=pirOn?'MOTION DETECTED':'NO MOTION';$('pirS').textContent=pirOn?'ALERT':'SAFE';$('pirS').className=pirOn?'al':'ok';
+  const hv=bar('vib',vib,'vibS'),hs=bar('snd',snd,'sndS');
+  if(pirOn&&!lastPir){clues++;log('PIR motion detected','PIR',true);}
+  if(hv&&!window._hv){clues++;log('Vibration above threshold','VIBRATION',true);}
+  if(hs&&!window._hs){clues++;log('Sound above threshold','MIC',true);}
+  lastPir=pir;window._hv=hv;window._hs=hs;
+  $('sClue').textContent=clues;
+  const any=pirOn||hv||hs;$('monP').textContent=any?'ALERT':'NORMAL';$('monP').className='pill'+(any?' r':'');
+  $('battT').textContent=Math.round(batt)+'%';$('battBar').style.width=Math.round(batt)+'%';
+  setPos(lat,lon,spd,sat);
 }
-function cmd(c){ writeCmd(c); }
-function setServo(axis, val){
-  document.getElementById(axis === 'P' ? 'panVal' : 'tiltVal').textContent = val;
-  writeCmd(axis + ':' + val);
-}
-
-// CSV payload: PIR,VIB,SND,BATT,LAT,LON
-function onTelemetry(evt){
-  const text = new TextDecoder().decode(evt.target.value);
-  const parts = text.split(',').map(Number);
-  if(parts.length < 6) return;
-  const [pir, vib, snd, batt, lat, lon] = parts;
-
-  const pirCell = document.getElementById('pirCell');
-  document.getElementById('pirVal').textContent = pir ? 'MOTION' : 'CLEAR';
-  pirCell.classList.toggle('trig', !!pir);
-  if(pir) log('PIR motion detected', 'alert');
-
-  setBar('vib', vib);
-  setBar('snd', snd);
-  document.getElementById('battVal').textContent = Math.round(batt) + '%';
-  document.getElementById('battBar').style.width = Math.round(batt) + '%';
-  document.getElementById('lat').textContent = lat.toFixed(5);
-  document.getElementById('lon').textContent = lon.toFixed(5);
-}
-function setBar(prefix, value){
-  const pct = Math.min(100, value);
-  document.getElementById(prefix+'Val').textContent = Math.round(value);
-  document.getElementById(prefix+'Bar').style.width = pct + '%';
-  document.getElementById(prefix+'Cell').classList.toggle('trig', pct > 70);
-}
-
-function connectCam(){
-  const ip = document.getElementById('ipInput').value.trim();
-  if(!ip){ log('Enter camera IP first', 'alert'); return; }
-  document.getElementById('camImg').src = 'http://' + ip + ':81/stream';
-  document.getElementById('camImg').style.display = 'block';
-  document.getElementById('noSignal').style.display = 'none';
-  log('Loading camera stream from ' + ip, 'info');
-}
-
-log('Terminal ready. Click "Pair via Bluetooth" to connect to the robot.', 'info');
+// ---------- mission ----------
+$('startBtn').onclick=()=>{mission=true;$('sMis').textContent='ACTIVE';log('Mission started','MISSION');};
+$('stopBtn').onclick=()=>{mission=false;drive('S');$('sMis').textContent='STOPPED';log('Mission stopped, motors halted','MISSION',true);};
+// ---------- camera ----------
+function camUrl(p){return 'http://'+$('ip').value.trim()+p;}
+$('camBtn').onclick=()=>{
+  const ip=$('ip').value.trim();if(!ip){log('Enter the camera IP first','CAMERA',true);return;}
+  const img=$('camImg');
+  img.onload=()=>{$('sCam').textContent='CONNECTED';$('liveP').textContent='LIVE';};
+  img.onerror=()=>{$('sCam').textContent='DISCONNECTED';$('liveP').textContent='NOT CONNECTED';img.style.display='none';$('camPh').style.display='';log('Camera stream failed. Check IP and that the PC is on the same WiFi.','CAMERA',true);};
+  img.src=camUrl(':81/stream');img.style.display='block';$('camPh').style.display='none';
+  log('Loading stream from '+ip,'CAMERA');
+};
+function ctl(v,val){fetch(camUrl('/control?var='+v+'&val='+val),{mode:'no-cors'}).catch(()=>{});}
+document.querySelectorAll('[data-v]').forEach(r=>r.oninput=()=>{r.closest('.sl').querySelector('em').textContent=r.value;});
+$('applyCam').onclick=()=>{
+  if(!$('ip').value.trim()){log('Enter the camera IP first','CAMERA',true);return;}
+  ctl('framesize',$('fs').value);
+  document.querySelectorAll('[data-v]').forEach(r=>ctl(r.dataset.v,r.value));
+  document.querySelectorAll('[data-t]').forEach(c=>{const k=c.dataset.t;if(k==='night')ctl('lenc',c.checked?1:0);else ctl(k,c.checked?1:0);});
+  log('Camera settings applied','CAMERA');
+};
+$('camReset').onclick=()=>{
+  $('fs').value=9;
+  document.querySelectorAll('[data-v]').forEach(r=>{r.value=r.dataset.v==='quality'?10:0;r.oninput();});
+  document.querySelectorAll('[data-t]').forEach(c=>c.checked=['awb','agc_gain','vflip'].includes(c.dataset.t));
+};
+// ---------- init ----------
+initMap();setPos(13.6288,79.4192,0,0);$('gpsP').textContent='WAITING';$('sGps').textContent='WAITING';
+log('RESQ-AI dashboard initialized');log('Ultrasonic sensor is not included in this project dashboard');log('GPS tracking module ready','GPS');
+badge();
 </script>
 </body>
 </html>
